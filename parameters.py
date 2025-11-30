@@ -44,6 +44,12 @@ class DataParams:
     def __init__(self):
         self.no_data = ''
 
+class LassoModelParams:
+    def __init__(self):
+        self.alpha = 0.1
+        self.max_iter = 10000
+        self.tol = 0.0001
+
 class GridParams:
     def __init__(self):
         self.year = 2012
@@ -57,6 +63,7 @@ class Params:
         self.seed = 12345
         self.data = DataParams()
         self.grid = GridParams()
+        self.model = LassoModelParams()
 
     def get_vec_dir_per_year(self):
         d = f'yearly_vec{os.sep}{self.dict_to_string_for_dir(self.vec.__dict__, old_style=True)}{os.sep}{self.dict_to_string_for_dir(self.data.__dict__, old_style=True)}{os.sep}{os.sep}{self.grid.year}{os.sep}'
