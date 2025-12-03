@@ -15,3 +15,8 @@ To get the features you’ll need to replicate what is done in:
 - _01_feature_engineering_para.py: this is the big one, it loads all the files you processed in _01_process_files and computes all the momentum/std/etc features. It’s also parallelized but only in 10 random chunks. I run two versions of it controlled by the arguments args.b. Again if you want to check how it’s run, in the folder scripts/slurm/ you’ll find _01_feature_engineering_para_v1.slurm and _01_feature_engineering_para_v2.slurm.
 
 In any of those parts, I wouldn't be suprised if you do find bug. So please be critical while you replicate! 
+
+
+## A notes on other codes: 
+- paramaters.py: it's my standard way to keep track of all hyper-parameters and easily run grids with clear names. Some find it confusing, so don't hesitate, although I don't think you'll need it, it's mostly for my exploraiton phase. 
+- utils_locals/*.py: Basically where I store most functions. Somewhat standard but if anything is unclear let me know. 
