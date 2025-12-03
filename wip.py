@@ -1,14 +1,14 @@
-import bz2
-import json
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import Lasso
+import psutil
 import os
-import didipack as didi
-import pandas as pd
-from parameters import Constant
-import matplotlib.pyplot as plt
-import numpy as np
-import numpy as np
-import pandas as pd
+from parameters import Params, LassoModelParams, RandomForestModelParams, XGBoostModelParams
+from utils_locals.parser import parse
 
+import socket
+from parameters import Constant
 
 class FeatureNormalizer:
     """
@@ -35,6 +35,8 @@ class FeatureNormalizer:
         self.std_cols = []
         self.count_cols = []
         self.order_dir_mean_cols = []
+        self.frac_cols = []        # *_frac columns (including total/runner fractions)
+        self.other_z_cols = ['marketBaseRate','numberOfActiveRunners','local_dow']     # any other columns to z score not in above groups
 
         self.fitted = False
 
@@ -50,6 +52,9 @@ class FeatureNormalizer:
             c for c in cols
             if c.startswith("order_is_back_order_is_back_") and c not in self.std_cols
         ]
+        # all fraction columns (both levels and momentum, e.g. *_m1_frac, *_m3_frac, *_mom_3_1_frac)
+        self.frac_cols = [c for c in cols if c.endswith("_frac")]
+        self.other_z_cols = self.other_z_cols + [c for c in cols if c.endswith("_m0")]
 
     @staticmethod
     def _zscore_col(series, mean, std):
@@ -65,10 +70,12 @@ class FeatureNormalizer:
         miss = df[self.predictors_col].isna().mean()
 
         # structural missing columns (no trades etc)
-        self.high_missing_cols = [c for c in self.predictors_col if miss[c] > 0.5]
+        self.high_missing_cols = [c for c in self.predictors_col if miss.get(c, 0.0) > 0.5]
 
         # add missing indicators and fill structural NaNs with 0
         for c in self.high_missing_cols:
+            if c not in df.columns:
+                continue
             ind_col = f"{c}_missing"
             df[ind_col] = df[c].isna().astype("int8")
             if ind_col not in self.predictors_col:
@@ -87,11 +94,19 @@ class FeatureNormalizer:
                 # still store median for OOS consistency
                 self.medians[c] = df[c].median()
 
-        # 2. detect groups
+        # 2. detect groups (after possibly adding *_missing indicators)
         self._detect_groups()
 
         # z score columns (union of all groups on original predictors)
-        z_cols = set(self.mom_cols + self.std_cols + self.count_cols + self.order_dir_mean_cols)
+        # now includes *_frac and *_mom_*_frac columns as well
+        z_cols = set(
+            self.mom_cols
+            + self.std_cols
+            + self.count_cols
+            + self.order_dir_mean_cols
+            + self.frac_cols
+            + self.other_z_cols
+        )
 
         # 3. log1p for std features only (both price and qty/prc stds)
         self.log1p_cols = set(self.std_cols)
@@ -159,42 +174,10 @@ class FeatureNormalizer:
 
         return df
 
+
+
 if __name__ == '__main__':
-    df = pd.DataFrame()
-    for i in [9,6,7,8]:
-        df = pd.concat([df, pd.read_parquet(f'res/features/greyhound_au_features_part_{i}.parquet')], ignore_index=False)
 
-    # buy at m0, sell at m1
-
-    # list all the features available at m0 based on the suffix
-    suffix_available_at_t0 = [
-        "_count_2_1",
-        "_count_3_1",
-        "_mean_2_1",
-        "_mean_3_1",
-        # "_m0",
-        # "_m1",
-        # "_m2",
-        # "_m3",
-        "_mom_2_1",
-        "_mom_3_1",
-        "_order_is_back_2_1",
-        "_order_is_back_3_1",
-        "_std_2_1",
-        "_std_3_1"
-    ]
-
-    predictors_col = [c for c in df.columns if c.endswith(tuple(suffix_available_at_t0))]
-    pd.isna(df[predictors_col]).mean()
+    df = pd.read_pickle('/data/projects/punim2039/refinitiv_processed/en/news_link_ticker/news_2023.p')
 
 
-    # columns to log in the normaliation includes:
-    # one with total_
-
-    suffix_enter = "_m0"
-    suffix_leave = "_p0"
-
-    df['delta_avg_odds'] = df[['best_back'+suffix_enter, 'best_lay'+suffix_enter]].mean(axis=1)- df[['best_back'+suffix_leave, 'best_lay'+suffix_leave]].mean(axis=1)
-
-    featureNormalizer = FeatureNormalizer(predictors_col)
-    df =featureNormalizer.normalize_ins(df)

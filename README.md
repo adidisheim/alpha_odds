@@ -1,43 +1,17 @@
 # alpha_odds
+Usually to replicate the full results you need to run all the codes in the _XX_ files in order, so first all the code in _01_ in order, then all the one in _02_ etc. 
+For this first phase you just need to replicate on your side _01_process_files and _03_feature_engineering only up to _01_feature_engineering_para.
 
-Commission Rate must be caluclated per MARKET (file)
+IMPORTANT NOTE: I like to organize these folders on my local machine but when code are run on the server all the code are copied to the base of the directory, it’s just to organize my thought locally and debug. To get an idea, check the code in scripts/sh/code_to_spartan.sh it’s all the scp that push the code to the server. You’ll see that I grab the code in each folder and paste it to the base. 
 
-Fixed effects: 
-number next to the name (box)
-Venue
-Number of active runners
+To get the features you’ll need to replicate what is done in: 
+## _01_process_files
+- _01_untar_files.py: simply untar all the base file
+- _02_process_all_files_para.py: First messy code :). As you’ll see it’s designed to be run in parallel on the server through one version of it per year-months. You can find the code that launches it on the server (if that helps) in scripts/slurm/_02_process_all_files_para.slurm. The line #SBATCH --array=0-323 means you launch 324 different computers each with a different input to the code (the id of the year-month) to process.
+- _03_merge_files.py: only launch once all the _02_ have finished running. It’s simply merging the output. This is standard trivial parallelization on HPC. Just launch X instances to process something, and when finished a simple script to merge. 
 
+## _03_feature_engineering
+- _00_feature_engineering_explore.py: this is solely a local code for me to debug. Ignore. 
+- _01_feature_engineering_para.py: this is the big one, it loads all the files you processed in _01_process_files and computes all the momentum/std/etc features. It’s also parallelized but only in 10 random chunks. I run two versions of it controlled by the arguments args.b. Again if you want to check how it’s run, in the folder scripts/slurm/ you’ll find _01_feature_engineering_para_v1.slurm and _01_feature_engineering_para_v2.slurm.
 
-We trade at -4' and we compute momentum and all starting at -15' 
-Features: 
-Momentum on odds, qty traded (each type), atb (qty), atl (qty), spread.
-Rolling volatilities on the features.
-Last minute version of all this.
-
-
-Back lay imbalance
-book overround: (implied probabilities across dogs.) (above 100 means illiquid for back qand below 100 for lay)
-
-
-Static in-out: 
-t-\tau:  -15' to -4'
-t0: 3'
-t+1: 1'
-
-Static in:
-t-\tau:  -15' to -4'
-t0: 3'
-
-
-Saved to: /data/projects/punim2039/alpha_odds/data/p/greyhound_au/win_2025_May_6.parquet
-Place df is empty, not saved
-Saved to: /data/projects/punim2039/alpha_odds/data/p/greyhound_au/mdef_2025_May_6.parquet
-
-
-
-
-Ok the first version of the algo will be: 
-
-1) panel of the first X=3 runners based on total volume at tm1. 
-2) for each run aggregate the relevant features for the rest of the field (runners X+1 to N). 
-3) predict the in and out of the odds. 
+In any of those parts, I wouldn't be suprised if you do find bug. So please be critical while you replicate! 

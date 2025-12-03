@@ -7,7 +7,7 @@ module load OpenMPI/4.1.4; module load PyTorch/1.12.1-CUDA-11.7.0
 source  ~/venvs/alpha_odds_venv/bin/activate
 
 
-python3 -m venv ~/venvs/alpha_odds_venv
 
- source ~/venvs/alpha_odds_venv/bin/activate
+# python3 -m venv ~/venvs/alpha_odds_venv
+#  source ~/venvs/alpha_odds_venv/bin/activate
 # python3 -m venv ~/venvs/alpha_odds_venv/

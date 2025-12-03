@@ -38,22 +38,35 @@ def get_half_order_book(df_all_bl, dog_id, type_trade):
     df = df.ffill().fillna(0)
     return df
 
-def get_best_value_old(df, order_type, q=0.0):
-    # mask where there is strictly positive volume
-    mask = df.gt(q)
 
-    if order_type == 'atl':
-        best = mask.idxmax(axis=1)
-    elif order_type == 'atb':
-        best = mask.iloc[:, ::-1].idxmax(axis=1)
-    else:
-        raise ValueError('order_type must be atl or atb')
-
-    # rows with no volume at any price should return NaN
-    best = best.where(mask.any(axis=1), other=np.nan)
-    return best
 
 def get_best_value(df, order_type, q=0.0):
+    """
+    For a given order book half (df: time x price with qty),
+    return:
+      - best price at which an order of size q can be executed
+      - cumulative quantity available up to that price (including all better levels)
+
+    For q == 0, this reduces to the top-of-book price and its quantity.
+    """
+    if order_type not in ("atl", "atb"):
+        raise ValueError("order_type must be 'atl' or 'atb'")
+    if order_type == 'atb':
+        col = pd.Series(df.columns).sort_values(ascending=False).values
+        df = df[col]
+    df = df.fillna(0)
+    cum_qty = df.cumsum(axis=1)
+    qty_times_price= df.mul(df.columns, axis=1)
+    avg_price = qty_times_price.cumsum(axis=1)/cum_qty
+    mask = cum_qty.gt(q).cumsum(axis=1)
+    mask = mask==1
+
+    execution_price = avg_price.where(mask).stack().reset_index(level=1, drop=True)
+    max_qty = cum_qty.where(mask).stack().reset_index(level=1, drop=True)
+    return execution_price.reindex(df.index), max_qty.reindex(df.index)
+
+
+def get_best_value_old(df, order_type, q=0.0):
     """
     For a given order book half (df: time x price with qty),
     return:
@@ -108,12 +121,12 @@ def get_best_value(df, order_type, q=0.0):
     best_price = pd.Series(best_price, index=df.index, name="best_price")
     best_qty = pd.Series(best_qty, index=df.index, name="cum_qty")
 
+
     # rows with no volume at any price should return NaN for both
     total_vol = (data > 0).sum(axis=1)
     no_vol_mask = total_vol == 0
     best_price[no_vol_mask] = np.nan
     best_qty[no_vol_mask] = np.nan
-
     return best_price, best_qty
 
 def infer_order_type(row):

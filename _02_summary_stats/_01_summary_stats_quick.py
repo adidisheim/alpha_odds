@@ -46,9 +46,11 @@ if __name__ == '__main__':
             df = pd.read_parquet(dest_path+file)
             df = df.reset_index()
             df['time_delta'] = df.groupby('file_name')['time'].transform('max') - df['time']
-            df['time_delta_hours'] = df['time_delta'].dt.total_seconds() / 3600
-            df['time_delta_min'] = round(df['time_delta_hours'] * 60) / 60
-            df['time_delta_hours'] = round(df['time_delta_hours'] * 4) / 4
+            df['time_delta_sec'] = df['time_delta'].dt.total_seconds().round()
+
+            df['time_delta_5s'] = (df['time_delta_sec'] + 4) // 5 * 5
+
+
 
             df['mid_price'] = (df['best_back'] + df['best_lay']) / 2
             df['mid_prb_win'] = 1 / df['mid_price']
@@ -60,12 +62,12 @@ if __name__ == '__main__':
             temp = temp.drop(columns=['qty'])
             df = df.merge(temp, on=['file_name', 'id'], how='left')
 
-            ind = (df['time_delta_hours'] <= 0.25)
+            ind = (df['time_delta_sec'] <= 60*5)
             df['won'] = df['id'] == -1
-            temp = df.loc[ind, :].groupby(['file_name', 'id'])[['won', 'mid_prb_win','vol_rank']].mean()
+            temp = df.loc[ind, :].groupby(['file_name', 'id','time_delta_sec'])[['won', 'mid_prb_win','vol_rank']].mean()
+            temp2 = df.loc[ind, :].groupby(['file_name', 'id','time_delta_sec'])[['qty']].sum()
+            temp = temp.merge(temp2,left_index=True, right_index=True,how='outer')
             temp['date'] = pd.to_datetime(df["time"].iloc[0:1]).dt.date.iloc[0]
-
-            breakpoint()
             df_total = pd.concat([df_total, temp], ignore_index=False)
             print('File size in gb, after merging:', df_total.memory_usage(deep=True).sum()/1e9)
             k+=1
@@ -73,5 +75,6 @@ if __name__ == '__main__':
                 print('Saving intermediate file...')
                 df_total.to_parquet(Constant.RES_DIR+f'{year}_ss.parquet')
         df_total.to_parquet(Constant.RES_DIR+f'{year}_ss.parquet')
+
 
 

@@ -79,7 +79,7 @@ if __name__ == '__main__':
                         df_all_bl = create_df_with_all_atl_and_atb(df_full)
                         df = pd.DataFrame()
                         for runner_id in runners['id'].tolist():
-                            temp = process_runner_order_book(df_all_bl, runners, runner_id, q_low=0, q_grid=[100, 1000])
+                            temp = process_runner_order_book(df_all_bl, runners, runner_id, q_low=0, q_grid=[100, 200, 1000])
                             temp['runner_position'] = runners.loc[runners['id'] ==runner_id, 'name_num'].iloc[0]
                             df = pd.concat([df, temp], ignore_index=False)
                             df['file_name']= market
@@ -106,3 +106,4 @@ if __name__ == '__main__':
                 print('Saved to:', dest_path+f'mdef_{year}_{month}_{day}.parquet',flush=True)
             else:
                 print('Mdef df is empty, not saved', flush=True)
+    print('All done!', flush=True)

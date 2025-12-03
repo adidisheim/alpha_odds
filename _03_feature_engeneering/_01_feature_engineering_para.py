@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 warnings.filterwarnings("ignore", category=pd.errors.PerformanceWarning)
 
-def compute_features(paths):
+def compute_features(paths, t_definition = 0):
     df = pd.read_parquet(paths)
     mdef = pd.read_parquet(paths.replace('win_', 'mdef_'))
     id_cols = ['file_name', 'id']
@@ -34,11 +34,20 @@ def compute_features(paths):
     df['time_delta'] = df.groupby('file_name')['time'].transform('max') - df['time']
 
     # define the exact time values for the snapshot
-    tm3 = pd.Timedelta("0 days 00:15:00")
-    tm2 = pd.Timedelta("0 days 00:05:00")
-    tm1 = pd.Timedelta("0 days 00:04:00")
-    t0 = pd.Timedelta("0 days 00:03:00")
-    tp1 = pd.Timedelta("0 days 00:01:00")
+    if t_definition == 0:
+        tm3 = pd.Timedelta("0 days 00:10:00")
+        tm2 = pd.Timedelta("0 days 00:03:00")
+        tm1 = pd.Timedelta("0 days 00:01:15")
+        t0 = pd.Timedelta("0 days 00:01:00")
+        tp1 = pd.Timedelta("0 days 00:00:10")
+    elif t_definition == 1:
+        tm3 = pd.Timedelta("0 days 00:10:00")
+        tm2 = pd.Timedelta("0 days 00:04:00")
+        tm1 = pd.Timedelta("0 days 00:02:15")
+        t0 = pd.Timedelta("0 days 00:02:00")
+        tp1 = pd.Timedelta("0 days 00:00:10")
+    else:
+        raise ValueError('t_definition not defined')
 
     # add the runner poistion
     df['runner_position'] = pd.to_numeric(df['runner_position'])
@@ -131,9 +140,10 @@ def compute_features(paths):
 
 if __name__ == '__main__':
     args = parse()
+    t_definition = args.b
     start_path = Constant.DATA_DIR+'p/greyhound_au/'
     file_to_run = np.sort([x for x in os.listdir(start_path) if 'win_' in x])
-    save_dir = Constant.RES_DIR+'features/'
+    save_dir = Constant.RES_DIR+f'features_t{t_definition}/'
     os.makedirs(save_dir, exist_ok=True)
     file_to_run = np.array_split(file_to_run, 10)[args.a]
 
@@ -153,6 +163,8 @@ if __name__ == '__main__':
 
     df['in_out_lay'] = (df['best_lay_m0'] - df['best_back_m1'])/(df['best_lay_m0']-1)
     df['in_out_back'] = df['best_back_m0']  - df['best_lay_m1']
+
+
 
 
 

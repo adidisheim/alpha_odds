@@ -46,13 +46,30 @@ class DataParams:
 
 class LassoModelParams:
     def __init__(self):
+        self.name_ = 'lasso'
         self.alpha = 0.1
-        self.max_iter = 10000
-        self.tol = 0.0001
+
+class RandomForestModelParams:
+    def __init__(self):
+        self.name_ = 'random_forest'
+        self.n_estimators = 100
+        self.max_depth = None
+
+class XGBoostModelParams:
+    def __init__(self):
+        self.name_ = 'xgboost'
+        self.n_estimators = 100
+        self.max_depth = 6
+        self.learning_rate = 0.1
 
 class GridParams:
     def __init__(self):
-        self.year = 2012
+        self.oos_year = 2025
+        self.start_ins_year = 2000
+        self.y_var = 'delta_avg_odds'
+        self.t_definition = None
+        self.topk_restriction = 3
+
 
 # store all basic_parameters into a single object
 class Params:
@@ -75,6 +92,10 @@ class Params:
         os.makedirs(d, exist_ok=True)
         return d
 
+    def get_model_grid_dir(self, old_style =True):
+        d = f'{Constant.RES_DIR}{os.sep}model{os.sep}{self.dict_to_string_for_dir(self.grid.__dict__, old_style=old_style)}{os.sep}{self.dict_to_string_for_dir(self.model.__dict__, old_style=old_style)}{os.sep}'
+        os.makedirs(d, exist_ok=True)
+        return d
 
 
     def update_model_name(self):

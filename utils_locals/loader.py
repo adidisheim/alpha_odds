@@ -16,7 +16,7 @@ def load_and_merge_ss():
 
     df = pd.DataFrame()
     for file_list in tqdm.tqdm(file_lists):
-        temp = pd.read_parquet(start_dir+file_list)
-        df = pd.concat([df, temp], ignore_index=False)
-
+        temp = pd.read_parquet(start_dir+file_list).reset_index()
+        if 'qty' in temp.columns:
+            df = pd.concat([df, temp], ignore_index=False)
     return df
