@@ -82,11 +82,11 @@ if __name__ == '__main__':
                             temp = process_runner_order_book(df_all_bl, runners, runner_id, q_low=0, q_grid=[100, 200, 1000])
                             temp['runner_position'] = runners.loc[runners['id'] ==runner_id, 'name_num'].iloc[0]
                             df = pd.concat([df, temp], ignore_index=False)
-                            df['file_name']= market
-                            if first_mdef['marketType'] == 'WIN':
-                                df_win = pd.concat([df_win, df], ignore_index=False)
-                            if first_mdef['marketType'] == 'PLACE':
-                                df_place = pd.concat([df_place, df], ignore_index=False)
+                        df['file_name']= market
+                        if first_mdef['marketType'] == 'WIN':
+                            df_win = pd.concat([df_win, df], ignore_index=False)
+                        if first_mdef['marketType'] == 'PLACE':
+                            df_place = pd.concat([df_place, df], ignore_index=False)
 
             df_win.columns = [str(x) for x in df_win.columns]
             df_place.columns = [str(x) for x in df_place.columns]

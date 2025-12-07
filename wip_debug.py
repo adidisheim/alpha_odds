@@ -152,7 +152,10 @@ if __name__ == '__main__':
     df = pd.DataFrame()
     k = 0
     # for file in file_to_run:
-    for file in reversed(file_to_run):
+    for file in ['win_2017_Oct_15.parquet']:
+    # for file in ['win_2017_Oct_16.parquet']:
+    # for file in ['win_2017_Oct_16.parquet']:
+    # for file in ['win_2018_May_9.parquet']:
         print(f'Processing file {file}', flush=True)
         temp = compute_features(start_path+file,t_definition)
         if '1.247509320.bz2' in temp['file_name']:

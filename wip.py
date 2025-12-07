@@ -178,6 +178,26 @@ class FeatureNormalizer:
 
 if __name__ == '__main__':
 
-    df = pd.read_pickle('/data/projects/punim2039/refinitiv_processed/en/news_link_ticker/news_2023.p')
+    # df = pd.read_pickle('/data/projects/punim2039/refinitiv_processed/en/news_link_ticker/news_2023.p')
+    df = pd.read_parquet('/data/projects/punim2039/alpha_odds/data/p/greyhound_au/win_2017_Jan_1.parquet')
+
+    # ind = df['total_lay_qty']<0.1
+    # df.loc[:,['best_lay','best_lay_q_100','total_lay_qty']]
+    # df.loc[:,['best_lay','best_lay_q_100']]
+
+    ind = (df.loc[:,'best_lay'] - df.loc[:,'best_lay_q_100']) > 0
+    ind.mean()
+    df.loc[ind,['best_lay','best_lay_q_100','total_back_qty']]
+    df.loc[:,['best_lay','best_lay_q_100','total_back_qty']]
+
+
+
+    ind = (df.loc[:,'best_back'] - df.loc[:,'best_back_q_100']) <0
+    ind.mean()
+
+
+
+
+
 
 
