@@ -46,6 +46,71 @@ def transform_prb_to_odds(df):
         df[f'best_back_q_100_{suffix}'] = 1/df[f'best_back_q_100_{suffix}']
         df[f'best_lay_q_100_{suffix}'] = 1/df[f'best_lay_q_100_{suffix}']
     return df
+# i have tryied ton size bets up using kelly crieterio. I think this is impormant as we should bet largwer when there is more edge identified
+def calculate_kelly_fraction(profit_rate, min_profit_threshold=0.0, max_kelly=1.0):
+    """
+    Calculate Kelly fraction from profit rate.
+    
+    Formula: Kelly = profit_rate / (1 + profit_rate) for positive edges
+    This is a simplified version appropriate for small profit rates.
+    
+    Parameters:
+    - profit_rate: Expected profit rate (fractional, e.g., 0.05 = 5% profit)
+    - min_profit_threshold: Minimum profit rate to consider (default: 0.0)
+    - max_kelly: Maximum Kelly fraction to cap at (default: 1.0, i.e., 100% of bankroll)
+    
+    Returns:
+    - kelly_fraction: Position size as fraction of bankroll (clipped between 0 and max_kelly)
+    """
+    # Only calculate Kelly for positive expected profits
+    kelly = np.where(
+        profit_rate > min_profit_threshold,
+        profit_rate / (1 + profit_rate),
+        0.0
+    )
+    # Cap at maximum Kelly fraction
+    return np.clip(kelly, 0.0, max_kelly)
+
+def apply_kelly_sizing(df, use_kelly=True, kelly_fraction=0.25, min_profit_threshold=0.0, max_kelly=1.0):
+    """
+    Apply Kelly criterion sizing to profit calculations.
+    
+    Parameters:
+    - df: DataFrame with profit_back_then_lay and profit_lay_then_back columns
+    - use_kelly: If False, return binary sizing (current behavior)
+    - kelly_fraction: Fraction of full Kelly to use (e.g., 0.25 = quarter Kelly)
+    - min_profit_threshold: Minimum profit to consider for sizing
+    - max_kelly: Maximum Kelly fraction cap
+    
+    Returns:
+    - df: DataFrame with additional columns for sized profits
+    """
+    if not use_kelly:
+        # Binary sizing: 1 if profitable, 0 otherwise
+        df['position_size_bl'] = (df['profit_back_then_lay'] > 0).astype(float)
+        df['position_size_lb'] = (df['profit_lay_then_back'] > 0).astype(float)
+    else:
+        # Calculate Kelly fractions
+        df['kelly_bl'] = calculate_kelly_fraction(
+            df['profit_back_then_lay'], 
+            min_profit_threshold, 
+            max_kelly
+        )
+        df['kelly_lb'] = calculate_kelly_fraction(
+            df['profit_lay_then_back'],
+            min_profit_threshold,
+            max_kelly
+        )
+        
+        # Apply fractional Kelly
+        df['position_size_bl'] = df['kelly_bl'] * kelly_fraction
+        df['position_size_lb'] = df['kelly_lb'] * kelly_fraction
+    
+    # Calculate sized profits (profit rate × position size)
+    df['profit_back_then_lay_sized'] = df['profit_back_then_lay'] * df['position_size_bl']
+    df['profit_lay_then_back_sized'] = df['profit_lay_then_back'] * df['position_size_lb']
+    
+    return df
 
 
 '''
@@ -75,7 +140,7 @@ if __name__ == '__main__':
     t_definition = 0
     qty_str = ''
     qty_str = '_q_100'
-    topk_restrcition = 2
+    topk_restriction = 2  # Miles: fixed variable name typo
     execution_type = ExecutionType.PURE_MARKET
     y_var = f'delta_avg_odds{qty_str}'
     y_var = f'delta_back_then_lay_odds{qty_str}'
@@ -83,7 +148,7 @@ if __name__ == '__main__':
     y_var = f'delta_start_limit_back_then_lay_odds{qty_str}'
     y_var = f'delta_start_limit_lay_then_back_odds{qty_str}'
     # y_var = 'win'
-    save_name = f'tdef{t_definition}topK{topk_restrcition}yvar{y_var}'
+    save_name = f'tdef{t_definition}topK{topk_restriction}yvar{y_var}'
     df = pd.read_parquet(load_dir+ save_name+'_df.parquet')
     df_importance = pd.read_parquet(load_dir+ save_name+'_importances.parquet')
 
@@ -142,6 +207,24 @@ if __name__ == '__main__':
         df["profit_back_then_lay"] = (back_entry*(df['id']==-1)) - 1
         df["profit_lay_then_back"] = 1 - (lay_entry*(df['id']==-1))
 
+    # Apply Kelly bet sizing
+    use_kelly = True  # Parameter to enable/disable Kelly sizing
+    kelly_fraction = 0.25  # kelly is super aggresive half or quater kelyl is common
+    min_profit_threshold = 0.0  # Only for positive expected profit
+    max_kelly = 1.0  # Cap at full Kelly 
+    
+    df = apply_kelly_sizing(
+        df, 
+        use_kelly=use_kelly,
+        kelly_fraction=kelly_fraction,
+        min_profit_threshold=min_profit_threshold,
+        max_kelly=max_kelly
+    )
+    
+    # Choose which profit columns to use for evaluation
+    profit_col_bl = 'profit_back_then_lay_sized' if use_kelly else 'profit_back_then_lay'
+    profit_col_lb = 'profit_lay_then_back_sized' if use_kelly else 'profit_lay_then_back'
+
     # add the market comission
     # for profit_col in ["profit_back_then_lay", "profit_lay_then_back"]:
     #     ind = df[profit_col] > 0
@@ -155,8 +238,8 @@ if __name__ == '__main__':
 
     back_first_id = df['prediction'] > 0
     lay_first_id = df['prediction'] < 0
-    back_first_profit = df.loc[back_first_id, "profit_back_then_lay"].mean()
-    lay_first_profit = df.loc[lay_first_id, "profit_lay_then_back"].mean()
+    back_first_profit = df.loc[back_first_id, profit_col_bl].mean()
+    lay_first_profit = df.loc[lay_first_id, profit_col_lb].mean()
 
     res = pd.DataFrame()
     agg_func = 'mean'
@@ -164,8 +247,8 @@ if __name__ == '__main__':
     # agg_func = lambda x: x.quantile(0.75)
     for q in np.arange(0.03, 0.98,0.01):
         tresh = df['prediction'].quantile(q)
-        profit_bl = df.loc[df['prediction']<=tresh, "profit_back_then_lay"]
-        profit_lb = df.loc[df['prediction']>=tresh, "profit_lay_then_back"]
+        profit_bl = df.loc[df['prediction']<=tresh, profit_col_bl]
+        profit_lb = df.loc[df['prediction']>=tresh, profit_col_lb]
         r = pd.Series({
             'quantile': q,
             'tresh': tresh,
@@ -177,8 +260,8 @@ if __name__ == '__main__':
         res = pd.concat([res, r.to_frame().T], ignore_index=True)
 
 
-    avg_back = df["profit_back_then_lay"].aggregate(agg_func)
-    avg_lay = df["profit_lay_then_back"].aggregate(agg_func)
+    avg_back = df[profit_col_bl].aggregate(agg_func)
+    avg_lay = df[profit_col_lb].aggregate(agg_func)
 
     plt.figure(figsize=(8, 5))
     plt.plot(res["quantile"], res["profit_bl"], color="#55A868",linestyle ='--', label="Strategy profit Back→Lay")

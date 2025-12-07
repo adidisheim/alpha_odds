@@ -271,13 +271,18 @@ def process_runner_order_book(df_all_bl, runners, runner_id, q_low=0, q_grid=Non
     # drop trd with zero qty (seems to happen sometimes)
     ind = trd['qty']>0
     trd = trd.loc[ind,:]
+    # we have a few trd with the same time we need to aggregate them properly
+    # Calculate volume-weighted average price (VWAP) instead of simple average
+    # this is what we discussed this is how I would fixed initially but you said there is a moire subtle bug so feel free to ignore
 
-    # we have a few trd with the same time we just sume the qty and avg the price
     if trd['time'].duplicated().any():
-        a = trd.groupby(['time'])['qty'].sum().reset_index()
-        b = trd.groupby(['time'])['prc'].mean().reset_index()
-        trd = a.merge(b, on='time')
-        del a,b
+        trd['notional'] = trd['qty'] * trd['prc']
+        trd = trd.groupby('time').agg({
+            'qty': 'sum',
+            'notional': 'sum'
+        }).reset_index()
+        trd['prc'] = trd['notional'] / trd['qty']
+        trd = trd.drop(columns=['notional'])
         if trd['time'].duplicated().any():
             breakpoint()
     trd = trd.set_index('time')

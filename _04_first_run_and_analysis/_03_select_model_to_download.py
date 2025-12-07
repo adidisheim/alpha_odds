@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     for t_definition in [0,1]:
         df_to_merge = pd.read_parquet(Constant.RES_DIR+f'oos_df_t{t_definition}.parquet')
-        for topk_restrcition in [1,2,3,4]:
+        for topk_restriction in [1,2,3,4]:  # Miles: fixed variable name typo
             for y_var in POSSIBLE_Y_VARIABLE:
                 par.model = XGBoostModelParams()
 
@@ -63,7 +63,7 @@ if __name__ == '__main__':
                 for i in range(27):
                     par.update_param_grid(grid, i)
                     par.grid.t_definition = t_definition
-                    par.grid.topk_restriction = topk_restrcition
+                    par.grid.topk_restriction = topk_restriction
                     par.grid.y_var = y_var
                     df = pd.read_parquet(par.get_model_grid_dir(old_style=True) + 'save_df.parquet')
                     if par.grid.y_var in ['win']:
@@ -78,15 +78,15 @@ if __name__ == '__main__':
 
                 par.update_param_grid(grid, i_best)
                 par.grid.t_definition = t_definition
-                par.grid.topk_restriction = topk_restrcition
+                par.grid.topk_restriction = topk_restriction
                 par.grid.y_var = y_var
                 df = pd.read_parquet(par.get_model_grid_dir(old_style=True) + 'save_df.parquet')
                 df = df.merge(df_to_merge, on=['file_name','id'], how='left')
                 corr = df[['prediction',par.grid.y_var]].corr()
-                print('For, t_definition = ', t_definition, 'topk_restriction = ', topk_restrcition, 'y_var = ', y_var)
+                print('For, t_definition = ', t_definition, 'topk_restriction = ', topk_restriction, 'y_var = ', y_var)
                 print('Correlation = ', corr.iloc[0,1],flush=True)
                 df_importance = pd.read_parquet(par.get_model_grid_dir(old_style=True) + 'xgboost_feature_importances.parquet')
-                save_name = f'tdef{t_definition}topK{topk_restrcition}yvar{y_var}'
+                save_name = f'tdef{t_definition}topK{topk_restriction}yvar{y_var}'
                 df.to_parquet(save_dir+ save_name+'_df.parquet')
                 df_importance.to_parquet(save_dir+ save_name+'_importances.parquet')
 
