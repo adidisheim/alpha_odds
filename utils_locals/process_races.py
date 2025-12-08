@@ -229,8 +229,7 @@ def process_runner_order_book(df_all_bl, runners, runner_id, q_low=0, q_grid=Non
             }
         ) # important, we don't ffill or dropna now because we need the na and non na to properly detect update in the order book forthe _high just after
     )
-
-    # # add to the lb_df the best prices and cum qty for each q in the q_grid
+    # add to the lb_df the best prices and cum qty for each q in the q_grid
     for q in q_grid:
         best_lay_high, qty_lay_high = get_best_value(lay, "atl", q)
         best_back_high, qty_back_high = get_best_value(back, "atb", q)

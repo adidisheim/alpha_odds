@@ -51,7 +51,7 @@ if __name__ == '__main__':
         id_cols = ['file_name','id']
 
         # we do it with the merge to get back the un-normalized odds.
-        df_save = df.loc[ind_oos,id_cols+col_save].copy()
+        df_save = df.loc[ind_oos,id_cols+fixed_effect_columns+col_save].copy()
         df_save.to_parquet(Constant.RES_DIR+f'oos_df_t{t_definition}.parquet')
         print('Saved to', Constant.RES_DIR+f'oos_df_t{t_definition}.parquet')
 

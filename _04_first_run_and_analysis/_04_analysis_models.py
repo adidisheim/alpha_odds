@@ -127,6 +127,7 @@ min               -0.998990           -989.099010
 max              237.095238              0.995800
 '''
 
+
 if __name__ == '__main__':
     args = parse()
     par = Params()
@@ -139,14 +140,14 @@ if __name__ == '__main__':
     load_dir = Constant.RES_DIR+'model_to_download/'
     t_definition = 0
     qty_str = ''
-    qty_str = '_q_100'
+    # qty_str = '_q_100'
     topk_restriction = 2  # Miles: fixed variable name typo
-    execution_type = ExecutionType.PURE_MARKET
+    execution_type = ExecutionType.START_LIMIT_END_MARKET
     y_var = f'delta_avg_odds{qty_str}'
-    y_var = f'delta_back_then_lay_odds{qty_str}'
-    y_var = f'delta_lay_then_back_odds{qty_str}'
-    y_var = f'delta_start_limit_back_then_lay_odds{qty_str}'
-    y_var = f'delta_start_limit_lay_then_back_odds{qty_str}'
+    # y_var = f'delta_back_then_lay_odds{qty_str}'
+    # y_var = f'delta_lay_then_back_odds{qty_str}'
+    # y_var = f'delta_start_limit_back_then_lay_odds{qty_str}'
+    # y_var = f'delta_start_limit_lay_then_back_odds{qty_str}'
     # y_var = 'win'
     save_name = f'tdef{t_definition}topK{topk_restriction}yvar{y_var}'
     df = pd.read_parquet(load_dir+ save_name+'_df.parquet')
@@ -228,6 +229,7 @@ if __name__ == '__main__':
     # add the market comission
     # for profit_col in ["profit_back_then_lay", "profit_lay_then_back"]:
     #     ind = df[profit_col] > 0
+    #     if 'marketBas'
     #     df.loc[ind,profit_col] =df.loc[ind,profit_col] * (1-df.loc[ind,'marketBaseRate']/100)
 
     ind = df['profit_back_then_lay']>10
