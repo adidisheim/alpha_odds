@@ -22,4 +22,4 @@ module load TensorFlow/2.11.0-CUDA-11.7.0-deeplearn
 module load OpenMPI/4.1.4; module load PyTorch/1.12.1-CUDA-11.7.0
 source  ~/venvs/alpha_odds_venv/bin/activate
 
-python3 _01_feature_engineering_para.py $SLURM_ARRAY_TASK_ID 0
+python3 _01_feature_engineering_para.py $SLURM_ARRAY_TASK_ID 2

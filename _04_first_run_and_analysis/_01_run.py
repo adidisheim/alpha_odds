@@ -204,7 +204,7 @@ if __name__ == '__main__':
         ['grid','start_ins_year',[2000]],
         ['grid','y_var', POSSIBLE_Y_VARIABLE],
         ['grid','topk_restriction', [1,2,3,4]],
-        ['grid','t_definition', [0,1]]
+        ['grid','t_definition', [2,3]]
     ]
 
     if args.b == 0: # lasso model
@@ -421,3 +421,5 @@ if __name__ == '__main__':
             par.get_model_grid_dir(old_style=True) + 'xgboost_feature_importances.parquet'
         )
         print('Saved XGBoost feature importances', flush=True)
+        model.save_model(par.get_model_grid_dir(old_style=True) + 'xgboost_model.json')
+        print('Saved xgboost model itself', flush=True)

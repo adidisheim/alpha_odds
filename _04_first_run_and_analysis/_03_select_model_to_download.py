@@ -9,9 +9,7 @@ from utils_locals.parser import parse
 
 import socket
 from parameters import Constant
-
-
-
+from xgboost import XGBRegressor, XGBRFClassifier
 
 POSSIBLE_Y_VARIABLE = [
     "delta_avg_odds",
@@ -80,6 +78,20 @@ if __name__ == '__main__':
                 par.grid.t_definition = t_definition
                 par.grid.topk_restriction = topk_restriction
                 par.grid.y_var = y_var
+
+                # save the model itself for Andrew.
+                model_path = par.get_model_grid_dir(old_style=True) + 'xgboost_model.json'
+                save_name = f'tdef{t_definition}topK{topk_restriction}yvar{y_var}'
+                out_path = save_dir + save_name + '_model.json'
+
+                if par.grid.y_var in ['win']:
+                    m = XGBRFClassifier()
+                else:
+                    m = XGBRegressor()
+
+                m.load_model(model_path)
+                m.save_model(out_path)
+
                 df = pd.read_parquet(par.get_model_grid_dir(old_style=True) + 'save_df.parquet')
                 df = df.merge(df_to_merge, on=['file_name','id'], how='left')
                 corr = df[['prediction',par.grid.y_var]].corr()

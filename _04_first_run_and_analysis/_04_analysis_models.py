@@ -50,15 +50,15 @@ def transform_prb_to_odds(df):
 def calculate_kelly_fraction(profit_rate, min_profit_threshold=0.0, max_kelly=1.0):
     """
     Calculate Kelly fraction from profit rate.
-    
+
     Formula: Kelly = profit_rate / (1 + profit_rate) for positive edges
     This is a simplified version appropriate for small profit rates.
-    
+
     Parameters:
     - profit_rate: Expected profit rate (fractional, e.g., 0.05 = 5% profit)
     - min_profit_threshold: Minimum profit rate to consider (default: 0.0)
     - max_kelly: Maximum Kelly fraction to cap at (default: 1.0, i.e., 100% of bankroll)
-    
+
     Returns:
     - kelly_fraction: Position size as fraction of bankroll (clipped between 0 and max_kelly)
     """
@@ -74,14 +74,14 @@ def calculate_kelly_fraction(profit_rate, min_profit_threshold=0.0, max_kelly=1.
 def apply_kelly_sizing(df, use_kelly=True, kelly_fraction=0.25, min_profit_threshold=0.0, max_kelly=1.0):
     """
     Apply Kelly criterion sizing to profit calculations.
-    
+
     Parameters:
     - df: DataFrame with profit_back_then_lay and profit_lay_then_back columns
     - use_kelly: If False, return binary sizing (current behavior)
     - kelly_fraction: Fraction of full Kelly to use (e.g., 0.25 = quarter Kelly)
     - min_profit_threshold: Minimum profit to consider for sizing
     - max_kelly: Maximum Kelly fraction cap
-    
+
     Returns:
     - df: DataFrame with additional columns for sized profits
     """
@@ -92,8 +92,8 @@ def apply_kelly_sizing(df, use_kelly=True, kelly_fraction=0.25, min_profit_thres
     else:
         # Calculate Kelly fractions
         df['kelly_bl'] = calculate_kelly_fraction(
-            df['profit_back_then_lay'], 
-            min_profit_threshold, 
+            df['profit_back_then_lay'],
+            min_profit_threshold,
             max_kelly
         )
         df['kelly_lb'] = calculate_kelly_fraction(
@@ -101,15 +101,15 @@ def apply_kelly_sizing(df, use_kelly=True, kelly_fraction=0.25, min_profit_thres
             min_profit_threshold,
             max_kelly
         )
-        
+
         # Apply fractional Kelly
         df['position_size_bl'] = df['kelly_bl'] * kelly_fraction
         df['position_size_lb'] = df['kelly_lb'] * kelly_fraction
-    
+
     # Calculate sized profits (profit rate × position size)
     df['profit_back_then_lay_sized'] = df['profit_back_then_lay'] * df['position_size_bl']
     df['profit_lay_then_back_sized'] = df['profit_lay_then_back'] * df['position_size_lb']
-    
+
     return df
 
 
@@ -141,13 +141,13 @@ if __name__ == '__main__':
     t_definition = 0
     qty_str = ''
     # qty_str = '_q_100'
-    topk_restriction = 2  # Miles: fixed variable name typo
+    topk_restriction = 1  # Miles: fixed variable name typo
     execution_type = ExecutionType.START_LIMIT_END_MARKET
-    y_var = f'delta_avg_odds{qty_str}'
+    # y_var = f'delta_avg_odds{qty_str}'
     # y_var = f'delta_back_then_lay_odds{qty_str}'
     # y_var = f'delta_lay_then_back_odds{qty_str}'
     # y_var = f'delta_start_limit_back_then_lay_odds{qty_str}'
-    # y_var = f'delta_start_limit_lay_then_back_odds{qty_str}'
+    y_var = f'delta_start_limit_lay_then_back_odds{qty_str}'
     # y_var = 'win'
     save_name = f'tdef{t_definition}topK{topk_restriction}yvar{y_var}'
     df = pd.read_parquet(load_dir+ save_name+'_df.parquet')
@@ -212,16 +212,16 @@ if __name__ == '__main__':
     use_kelly = True  # Parameter to enable/disable Kelly sizing
     kelly_fraction = 0.25  # kelly is super aggresive half or quater kelyl is common
     min_profit_threshold = 0.0  # Only for positive expected profit
-    max_kelly = 1.0  # Cap at full Kelly 
-    
+    max_kelly = 1.0  # Cap at full Kelly
+
     df = apply_kelly_sizing(
-        df, 
+        df,
         use_kelly=use_kelly,
         kelly_fraction=kelly_fraction,
         min_profit_threshold=min_profit_threshold,
         max_kelly=max_kelly
     )
-    
+
     # Choose which profit columns to use for evaluation
     profit_col_bl = 'profit_back_then_lay_sized' if use_kelly else 'profit_back_then_lay'
     profit_col_lb = 'profit_lay_then_back_sized' if use_kelly else 'profit_lay_then_back'

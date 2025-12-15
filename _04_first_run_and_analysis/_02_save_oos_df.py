@@ -15,7 +15,8 @@ from parameters import Constant
 
 if __name__ == '__main__':
 
-    for t_definition in [0,1]:
+    # for t_definition in [0,1]:
+    for t_definition in [2,3]:
         load_dir = f'{Constant.RES_DIR}/features_t{t_definition}'
         df = pd.DataFrame()
         to_load = range(10)

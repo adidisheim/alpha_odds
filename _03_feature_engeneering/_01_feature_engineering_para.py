@@ -48,6 +48,18 @@ def compute_features(paths, t_definition = 0):
         tm1 = pd.Timedelta("0 days 00:02:15")
         t0 = pd.Timedelta("0 days 00:02:00")
         tp1 = pd.Timedelta("0 days 00:00:10")
+    elif t_definition == 2:
+        tm3 = pd.Timedelta("0 days 00:5:00")
+        tm2 = pd.Timedelta("0 days 00:02:00")
+        tm1 = pd.Timedelta("0 days 00:00:35")
+        t0 = pd.Timedelta("0 days 00:00:30")
+        tp1 = pd.Timedelta("0 days 00:00:10")
+    elif t_definition == 3:
+        tm3 = pd.Timedelta("0 days 00:5:00")
+        tm2 = pd.Timedelta("0 days 00:02:00")
+        tm1 = pd.Timedelta("0 days 00:00:25")
+        t0 = pd.Timedelta("0 days 00:00:20")
+        tp1 = pd.Timedelta("0 days 00:00:05")
     else:
         raise ValueError('t_definition not defined')
 
