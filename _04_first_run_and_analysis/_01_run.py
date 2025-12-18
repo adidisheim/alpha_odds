@@ -4,11 +4,11 @@ from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.linear_model import Lasso
 import psutil
 import os
-from parameters import Params, LassoModelParams, RandomForestModelParams, XGBoostModelParams
+from parameters import Params, LassoModelParams, RandomForestModelParams, XGBoostModelParams, SpreadTopKCriterion
 from utils_locals.parser import parse
 
 import socket
-from parameters import Constant
+from parameters import Constant, SHARED_GRID, POSSIBLE_Y_VARIABLE
 
 class FeatureNormalizer:
     """
@@ -174,38 +174,11 @@ class FeatureNormalizer:
 
         return df
 
-POSSIBLE_Y_VARIABLE = [
-    "delta_avg_odds",
-    "delta_back_then_lay_odds",
-    "delta_lay_then_back_odds",
-    "delta_start_limit_back_then_lay_odds",
-    "delta_start_limit_lay_then_back_odds",
-
-    "delta_avg_odds_q_100",
-    "delta_back_then_lay_odds_q_100",
-    "delta_lay_then_back_odds_q_100",
-    "delta_start_limit_back_then_lay_odds_q_100",
-    "delta_start_limit_lay_then_back_odds_q_100",
-
-    "win"
-
-    # "delta_avg_odds_q_1000",
-    # "delta_back_then_lay_odds_q_1000",
-    # "delta_lay_then_back_odds_q_1000",
-    # "delta_start_limit_back_then_lay_odds_q_1000",
-    # "delta_start_limit_lay_then_back_odds_q_1000"
-]
 
 
 if __name__ == '__main__':
     args = parse()
     par = Params()
-    shared_grid = [
-        ['grid','start_ins_year',[2000]],
-        ['grid','y_var', POSSIBLE_Y_VARIABLE],
-        ['grid','topk_restriction', [1,2,3,4]],
-        ['grid','t_definition', [2,3]]
-    ]
 
     if args.b == 0: # lasso model
         print("Lasso model selected", flush=True)
@@ -213,7 +186,7 @@ if __name__ == '__main__':
         grid = [
             ['model','alpha',np.logspace(-12, 1, 6)],
         ]
-        grid = shared_grid + grid
+        grid = SHARED_GRID + grid
     elif args.b ==1: # random forest
         print("Random Forest model selected", flush=True)
         par.model = RandomForestModelParams()
@@ -221,7 +194,7 @@ if __name__ == '__main__':
             ['model','n_estimators',[50,100,1000]],
             ['model','max_depth',[5,10,None]],
         ]
-        grid = shared_grid + grid
+        grid = SHARED_GRID + grid
     elif args.b ==2: # xgboost
         print("XGBoost model selected", flush=True)
         par.model = XGBoostModelParams()
@@ -237,7 +210,7 @@ if __name__ == '__main__':
         #     ['model', 'subsample', [0.6, 0.8, 1.0]],
         #     ['model', 'colsample_bytree', [0.6, 0.8, 1.0]],
         # ]
-        grid = shared_grid + grid
+        grid = SHARED_GRID + grid
     else:
         raise ValueError(f"Unsupported model type: {args.b}")
     par.update_param_grid(grid, args.a)
@@ -320,10 +293,14 @@ if __name__ == '__main__':
 
     predictors_col = predictors_col+col_frac_mom+col_frac
 
-    # detect the top3 runners by total liquidity at m1
+    # detect the top3 runners by bid-ask
     topX = par.grid.topk_restriction
     df = df.reset_index()
-    ind = df.groupby('file_name')['total_qty_m1'].rank(method='min', ascending=False) <= topX
+    if par.grid.spread_top_k_criterion == SpreadTopKCriterion.VANILLA:
+        df['spread_for_top_k'] = ((df['best_back_m1']) - (df['best_lay_m1'])).abs() # todo explore with miles why it's sometimes neg.
+    elif par.grid.spread_top_k_criterion == SpreadTopKCriterion.Q100:
+        df['spread_for_top_k'] = ((df['best_back_q_100_m1']) - (df['best_lay_q_100_m1'])).abs()
+    ind = df.groupby('file_name')['spread_for_top_k'].rank(method='min', ascending=False) <= topX
 
     fixed_effect_columns = ['local_dow', 'marketBaseRate', 'numberOfActiveRunners']
     predictors_col = predictors_col  + fixed_effect_columns
@@ -331,6 +308,11 @@ if __name__ == '__main__':
     # in this first version we don't do any features on df_low and just drop them, but to explore.
     # df_low = df[~ind].copy()
     df = df[ind].copy()
+
+    # if criterion is not -1, we drop observaiton with too high a spread
+    if par.grid.spread_restriction > -1:
+        ind = df['spread_for_top_k'] <= par.grid.spread_restriction
+        df = df[ind]
 
     ins_years = df['marketTime_local'].dt.year.unique()
     ins_years = [int(x) for x in ins_years if (x != par.grid.oos_year) and (x >= par.grid.start_ins_year)]
@@ -423,3 +405,4 @@ if __name__ == '__main__':
         print('Saved XGBoost feature importances', flush=True)
         model.save_model(par.get_model_grid_dir(old_style=True) + 'xgboost_model.json')
         print('Saved xgboost model itself', flush=True)
+    print('All Saved in ', par.get_model_grid_dir(old_style=True),flush=True)

@@ -14,6 +14,7 @@ import hashlib
 
 
 
+
 ##################
 # Enum
 ##################
@@ -23,6 +24,48 @@ class PenalizationType(Enum):
     L2 = 'l2'
     ELASTICNET = 'elasticnet'
     NONE = 'none'
+
+
+class SpreadTopKCriterion(Enum):
+    VANILLA = 'vanilla'
+    Q100 = 'q100'
+
+
+##################
+# Running GRID
+##################
+
+POSSIBLE_Y_VARIABLE = [
+    "delta_avg_odds",
+    # "delta_back_then_lay_odds",
+    # "delta_lay_then_back_odds",
+    # "delta_start_limit_back_then_lay_odds",
+    # "delta_start_limit_lay_then_back_odds",
+
+    "delta_avg_odds_q_100",
+    # "delta_back_then_lay_odds_q_100",
+    # "delta_lay_then_back_odds_q_100",
+    # "delta_start_limit_back_then_lay_odds_q_100",
+    # "delta_start_limit_lay_then_back_odds_q_100",
+
+    # "win"
+
+    # "delta_avg_odds_q_1000",
+    # "delta_back_then_lay_odds_q_1000",
+    # "delta_lay_then_back_odds_q_1000",
+    # "delta_start_limit_back_then_lay_odds_q_1000",
+    # "delta_start_limit_lay_then_back_odds_q_1000"
+]
+
+SHARED_GRID = [
+    ['grid', 'start_ins_year', [2000]],
+    ['grid', 'y_var', POSSIBLE_Y_VARIABLE],
+    ['grid', 'topk_restriction', [1, 2, 3]],
+    ['grid', 't_definition', [1, 2, 3]],
+    ['grid', 'spread_restriction', [-1, 0.1, 0.05]],
+    ['grid', 'spread_top_k_criterion', [SpreadTopKCriterion.VANILLA, SpreadTopKCriterion.Q100]],
+]
+
 
 ##################
 # constant
@@ -117,13 +160,14 @@ class Params:
 
         print('----', flush=True)
 
-    def update_param_grid(self, grid_list, id_comb):
+    def update_param_grid(self, grid_list, id_comb, verbose = True):
         ind = []
         for l in grid_list:
             t = np.arange(0, len(l[2]))
             ind.append(t.tolist())
         combs = list(itertools.product(*ind))
-        print('comb', str(id_comb + 1), '/', str(len(combs)))
+        if verbose:
+            print('comb', str(id_comb + 1), '/', str(len(combs)))
         c = combs[id_comb]
 
         for i, l in enumerate(grid_list):

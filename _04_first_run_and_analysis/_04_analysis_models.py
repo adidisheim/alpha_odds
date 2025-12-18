@@ -143,11 +143,11 @@ if __name__ == '__main__':
     # qty_str = '_q_100'
     topk_restriction = 1  # Miles: fixed variable name typo
     execution_type = ExecutionType.START_LIMIT_END_MARKET
-    # y_var = f'delta_avg_odds{qty_str}'
+    y_var = f'delta_avg_odds{qty_str}'
     # y_var = f'delta_back_then_lay_odds{qty_str}'
     # y_var = f'delta_lay_then_back_odds{qty_str}'
     # y_var = f'delta_start_limit_back_then_lay_odds{qty_str}'
-    y_var = f'delta_start_limit_lay_then_back_odds{qty_str}'
+    # y_var = f'delta_start_limit_lay_then_back_odds{qty_str}'
     # y_var = 'win'
     save_name = f'tdef{t_definition}topK{topk_restriction}yvar{y_var}'
     df = pd.read_parquet(load_dir+ save_name+'_df.parquet')
