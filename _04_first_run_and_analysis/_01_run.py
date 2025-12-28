@@ -10,14 +10,10 @@ from utils_locals.parser import parse
 import socket
 from parameters import Constant, SHARED_GRID, POSSIBLE_Y_VARIABLE
 
+
 class FeatureNormalizer:
     """
     Normalizer for engineered Betfair features.
-
-    Usage:
-        norm = FeatureNormalizer(predictors_col)
-        df_ins_norm = norm.normalize_ins(df_ins)   # fit + transform
-        df_oos_norm = norm.normalize_oos(df_oos)   # transform only (OOS)
     """
 
     def __init__(self, predictors_col):
@@ -25,24 +21,23 @@ class FeatureNormalizer:
 
         # fitted params
         self.high_missing_cols = []
-        self.medians = {}          # col -> median (for NaN fill)
-        self.z_means = {}          # col -> mean for z score
-        self.z_stds = {}           # col -> std for z score
-        self.log1p_cols = set()    # cols that use log1p before z score
+        self.medians = {}  # col -> median (for NaN fill)
+        self.z_means = {}  # col -> mean for z score
+        self.z_stds = {}  # col -> std for z score
+        self.log1p_cols = set()  # cols that use log1p before z score
 
         # groups for reference
         self.mom_cols = []
         self.std_cols = []
         self.count_cols = []
         self.order_dir_mean_cols = []
-        self.frac_cols = []        # *_frac columns (including total/runner fractions)
-        self.other_z_cols = ['marketBaseRate','numberOfActiveRunners','local_dow']     # any other columns to z score not in above groups
+        self.frac_cols = []
+        self.other_z_cols = ['marketBaseRate', 'numberOfActiveRunners', 'local_dow']
 
         self.fitted = False
 
     def _detect_groups(self):
         """Detect column groups based on names in self.predictors_col."""
-
         cols = self.predictors_col
 
         self.mom_cols = [c for c in cols if "_mom_" in c]
@@ -52,7 +47,6 @@ class FeatureNormalizer:
             c for c in cols
             if c.startswith("order_is_back_order_is_back_") and c not in self.std_cols
         ]
-        # all fraction columns (both levels and momentum, e.g. *_m1_frac, *_m3_frac, *_mom_3_1_frac)
         self.frac_cols = [c for c in cols if c.endswith("_frac")]
         self.other_z_cols = self.other_z_cols + [c for c in cols if c.endswith("_m0")]
 
@@ -68,57 +62,42 @@ class FeatureNormalizer:
 
         # 1. basic missing info
         miss = df[self.predictors_col].isna().mean()
-
-        # structural missing columns (no trades etc)
         self.high_missing_cols = [c for c in self.predictors_col if miss.get(c, 0.0) > 0.5]
 
-        # add missing indicators and fill structural NaNs with 0
         for c in self.high_missing_cols:
-            if c not in df.columns:
-                continue
+            if c not in df.columns: continue
             ind_col = f"{c}_missing"
             df[ind_col] = df[c].isna().astype("int8")
             if ind_col not in self.predictors_col:
                 self.predictors_col.append(ind_col)
             df[c] = df[c].fillna(0)
 
-        # fill remaining NaNs with median and store
         for c in self.predictors_col:
-            if c not in df.columns:
-                continue
+            if c not in df.columns: continue
             if df[c].isna().any():
                 med = df[c].median()
                 self.medians[c] = med
                 df[c] = df[c].fillna(med)
             else:
-                # still store median for OOS consistency
                 self.medians[c] = df[c].median()
 
-        # 2. detect groups (after possibly adding *_missing indicators)
+        # 2. detect groups
         self._detect_groups()
 
-        # z score columns (union of all groups on original predictors)
-        # now includes *_frac and *_mom_*_frac columns as well
         z_cols = set(
-            self.mom_cols
-            + self.std_cols
-            + self.count_cols
-            + self.order_dir_mean_cols
-            + self.frac_cols
-            + self.other_z_cols
+            self.mom_cols + self.std_cols + self.count_cols +
+            self.order_dir_mean_cols + self.frac_cols + self.other_z_cols
         )
 
-        # 3. log1p for std features only (both price and qty/prc stds)
+        # 3. log1p
         self.log1p_cols = set(self.std_cols)
-
         for c in self.log1p_cols:
             if c in df.columns:
                 df[c] = np.log1p(df[c].clip(lower=0))
 
-        # 4. fit mean and std for z score columns and transform
+        # 4. fit mean and std
         for c in z_cols:
-            if c not in df.columns:
-                continue
+            if c not in df.columns: continue
             mean_c = df[c].mean()
             std_c = df[c].std(ddof=0)
             self.z_means[c] = mean_c
@@ -131,49 +110,89 @@ class FeatureNormalizer:
     def normalize_oos(self, df):
         """Normalize out of sample df using fitted parameters."""
         if not self.fitted:
-            raise RuntimeError("FeatureNormalizer must be fitted with normalize_ins before calling normalize_oos.")
+            raise RuntimeError("FeatureNormalizer must be fitted with normalize_ins first.")
 
         df = df.copy()
 
-        # ensure all predictor cols exist (create if missing)
+        # Ensure all cols exist
         for c in self.predictors_col:
             if c not in df.columns:
-                # create as NaN so the filling logic handles it
                 df[c] = np.nan
 
-        # 1. structural missing: same rule as in sample
+        # 1. structural missing
         for c in self.high_missing_cols:
             if c in df.columns:
                 ind_col = f"{c}_missing"
                 df[ind_col] = df[c].isna().astype("int8")
-                # do not add to predictors_col here, assumed already there
                 df[c] = df[c].fillna(0)
 
-        # 2. remaining NaNs: use stored medians
+        # 2. remaining NaNs
         for c in self.predictors_col:
-            if c not in df.columns:
-                continue
+            if c not in df.columns: continue
             if df[c].isna().any():
                 med = self.medians.get(c, 0.0)
                 df[c] = df[c].fillna(med)
 
-        # 3. apply log1p to std columns
+        # 3. apply log1p
         for c in self.log1p_cols:
             if c in df.columns:
                 df[c] = np.log1p(df[c].clip(lower=0))
 
-        # 4. z score using stored means and stds
-        z_cols = set(self.z_means.keys())
-
-        for c in z_cols:
-            if c not in df.columns:
-                continue
+        # 4. z score
+        for c in self.z_means.keys():
+            if c not in df.columns: continue
             mean_c = self.z_means[c]
             std_c = self.z_stds[c]
             df[c] = self._zscore_col(df[c], mean_c, std_c)
 
         return df
 
+    def get_feature_metadata(self):
+        """
+        Returns a DataFrame summarizing how each feature is handled.
+        Contains: median, z-score params (mean/std), and boolean flags for transforms.
+        """
+        if not self.fitted:
+            raise RuntimeError("FeatureNormalizer is not fitted yet.")
+
+        # Create a dictionary to hold row data for each feature
+        data = {}
+
+        # Initialize with all known predictors
+        for col in self.predictors_col:
+            data[col] = {
+                'feature': col,
+                'fill_median': self.medians.get(col, np.nan),
+                'z_mean': self.z_means.get(col, np.nan),
+                'z_std': self.z_stds.get(col, np.nan),
+                'is_log1p': col in self.log1p_cols,
+                'is_high_missing': col in self.high_missing_cols,
+                'group': 'other'  # default
+            }
+
+        # Tag groups for clarity
+        group_map = {
+            'momentum': self.mom_cols,
+            'std_dev': self.std_cols,
+            'count': self.count_cols,
+            'order_dir': self.order_dir_mean_cols,
+            'fraction': self.frac_cols,
+            'misc_z': self.other_z_cols
+        }
+
+        for group_name, cols in group_map.items():
+            for c in cols:
+                if c in data:
+                    data[c]['group'] = group_name
+
+        df_meta = pd.DataFrame(list(data.values()))
+
+        # Reorder columns for readability
+        cols_order = ['feature', 'group', 'fill_median', 'z_mean', 'z_std', 'is_log1p', 'is_high_missing']
+        # add any extra columns that might exist (though unlikely with this logic)
+        cols_order += [c for c in df_meta.columns if c not in cols_order]
+
+        return df_meta[cols_order]
 
 
 if __name__ == '__main__':
@@ -300,24 +319,22 @@ if __name__ == '__main__':
         df['spread_for_top_k'] = ((df['best_back_m1']) - (df['best_lay_m1'])).abs() # todo explore with miles why it's sometimes neg.
     elif par.grid.spread_top_k_criterion == SpreadTopKCriterion.Q100:
         df['spread_for_top_k'] = ((df['best_back_q_100_m1']) - (df['best_lay_q_100_m1'])).abs()
-    ind = df.groupby('file_name')['spread_for_top_k'].rank(method='min', ascending=False) <= topX
+    ind_top_k = df.groupby('file_name')['spread_for_top_k'].rank(method='min', ascending=False) <= topX
 
     fixed_effect_columns = ['local_dow', 'marketBaseRate', 'numberOfActiveRunners']
     predictors_col = predictors_col  + fixed_effect_columns
 
-    # in this first version we don't do any features on df_low and just drop them, but to explore.
-    # df_low = df[~ind].copy()
-    df = df[ind].copy()
-
-    # if criterion is not -1, we drop observaiton with too high a spread
-    if par.grid.spread_restriction > -1:
-        ind = df['spread_for_top_k'] <= par.grid.spread_restriction
-        df = df[ind]
 
     ins_years = df['marketTime_local'].dt.year.unique()
     ins_years = [int(x) for x in ins_years if (x != par.grid.oos_year) and (x >= par.grid.start_ins_year)]
-    ind_ins = df['marketTime_local'].dt.year.isin(ins_years)
+    ind_ins = df['marketTime_local'].dt.year.isin(ins_years) & ind_top_k
     ind_oos = df['marketTime_local'].dt.year == par.grid.oos_year
+
+    # if criterion is not -1, we drop observation with too high a spread
+    if par.grid.spread_restriction > -1:
+        ind = df['spread_for_top_k'] <= par.grid.spread_restriction
+        ind_ins = ind_ins & ind
+
 
     featuresNormalizer = FeatureNormalizer(predictors_col)
     df_ins =  featuresNormalizer.normalize_ins(df.loc[ind_ins,:])
@@ -384,6 +401,14 @@ if __name__ == '__main__':
 
     print(df_save[[par.grid.y_var,'prediction']].corr())
     df_save.to_parquet(par.get_model_grid_dir(old_style =True)+'save_df.parquet')
+
+    try:
+        df_norm_meta = featuresNormalizer.get_feature_metadata()
+        df_norm_meta.to_parquet(par.get_model_grid_dir(old_style=True) + 'feature_normalization_params.parquet')
+        print('Saved feature normalization parameters', flush=True)
+    except Exception as e:
+        print(f"Warning: Could not save normalization params. Error: {e}", flush=True)
+
     print('Saved OOS predictions', flush=True)
     if par.model.name_ =='lasso':
         # also save the coefficents associated to each feature
