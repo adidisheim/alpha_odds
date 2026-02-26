@@ -7,7 +7,6 @@ known_hosts
 known_hosts.old
 config
 .env
-certs/
 
 # Data and results (too large for git)
 data/
