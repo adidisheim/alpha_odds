@@ -8,11 +8,6 @@
 #SBATCH --partition=bigmem
 #SBATCH --account="punim2039"
 
-#SBATCH --mail-type=ALL # notifications for job start, end, and failure
-#SBATCH --mail-user=antoine.didisheim@unimelb.edu.au
-#SBATCH --mail-type=FAIL
-#SBATCH --mail-type=BEGIN
-#SBATCH --mail-type=END
 
 
 #SBATCH --nodes=1

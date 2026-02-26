@@ -5,8 +5,6 @@
 #SBATCH --chdir=/home/adidishe/alpha_odds
 #SBATCH --array=0-323
 
-#SBATCH --mail-type=ALL # notifications for job start, end, and failure
-#SBATCH --mail-user=antoine.didisheim@unimelb.edu.au
 
 #SBATCH --nodes 1
 #SBATCH --ntasks 1

@@ -16,8 +16,8 @@ def process_order(ord, time,index):
             temp['runner_id'] = ord['id']
         else:
             temp = pd.DataFrame()
-    except:
-        raise 'Error processing order'
+    except Exception as e:
+        raise Exception(f'Error processing order: {e}')
     return temp
 
 def process_event_list(event_list, time,index):
@@ -32,8 +32,8 @@ def get_half_order_book(df_all_bl, dog_id, type_trade):
     try:
         df = df.groupby(['time','prc'])['qty'].sum().reset_index()
         df = df.pivot(columns='prc', values='qty', index=['time'])
-    except:
-        breakpoint()
+    except Exception as e:
+        raise Exception(f'Error in get_half_order_book for runner {dog_id}, type {type_trade}: {e}')
     df = df.sort_index(ascending=True)
     df = df.ffill().fillna(0)
     return df
@@ -121,9 +121,8 @@ def get_best_value(df, order_type, q_value=0.0):
         ind = comp['p0']>comp['p100']
         if order_type == "atb":
             ind = comp['p0']<comp['p100']
-        if ind.sum()>0:
-            breakpoint()
-        # comp.loc[ind, :]
+        # sanity check: top-of-book should always be better than or equal to execution price
+        # if ind.sum()>0: indicates a potential order book inconsistency
 
     return execution_price.reindex(df.index), executed_qty.reindex(df.index)
 
@@ -150,9 +149,6 @@ def get_best_value_old(df, order_type, q_value=0.0):
     mask = mask==1
     execution_price = avg_price.where(mask).stack().reset_index(level=1, drop=True)
     max_qty = cum_qty.where(mask).stack().reset_index(level=1, drop=True)
-    if order_type == 'atl':
-        breakpoint()
-
     return execution_price.reindex(df.index), max_qty.reindex(df.index)
 
 
@@ -283,7 +279,7 @@ def process_runner_order_book(df_all_bl, runners, runner_id, q_low=0, q_grid=Non
         trd['prc'] = trd['notional'] / trd['qty']
         trd = trd.drop(columns=['notional'])
         if trd['time'].duplicated().any():
-            breakpoint()
+            raise Exception(f'Duplicate times remain after VWAP aggregation for runner {runner_id}')
     trd = trd.set_index('time')
     temp = lb_df.merge(trd, left_index=True, right_index=True, how='outer').sort_index()
 
@@ -297,7 +293,6 @@ def process_runner_order_book(df_all_bl, runners, runner_id, q_low=0, q_grid=Non
         runner_won = runners.loc[runners['id'] == runner_id, 'status'].iloc[0] == 'WINNER'
         temp['id'] = -1 if runner_won else runner_id
 
-    breakpoint()
     return temp
 
 

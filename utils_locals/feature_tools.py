@@ -10,5 +10,6 @@ def add_time_snapshot(df,snap_time):
     # df = pd.concat([temp, df], axis=0, ignore_index=True)
     df = pd.concat([temp.astype(df.dtypes), df], ignore_index=True) # (to fix the stupide warning of pandas)
     df = df.sort_values(['file_name','id','time_delta'], ascending=[True, True, False])
-    df = df.ffill()
+    cols_to_fill = [c for c in df.columns if c not in ['file_name', 'id', 'time_delta']]
+    df[cols_to_fill] = df.groupby(['file_name', 'id'])[cols_to_fill].ffill()
     return df, df.loc[df['time_delta'] == snap_time, :].drop_duplicates().copy()

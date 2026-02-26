@@ -335,9 +335,11 @@ if __name__ == '__main__':
         ind = df['spread_for_top_k'] <= par.grid.spread_restriction
         ind_ins = ind_ins & ind
 
-
     featuresNormalizer = FeatureNormalizer(predictors_col)
     df_ins =  featuresNormalizer.normalize_ins(df.loc[ind_ins,:])
+    df_ins.to_parquet(Constant.RES_DIR+'df_ins.parquet')
+    par.print_values()
+    breakpoint()
     df_oos =  featuresNormalizer.normalize_oos(df.loc[ind_oos,:])
 
     df_ins.dropna(inplace=True, subset=[par.grid.y_var])

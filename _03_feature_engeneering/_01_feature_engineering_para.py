@@ -137,10 +137,8 @@ def compute_features(paths, t_definition = 0):
         .merge(std_2_1, on=id_cols, how='outer')
         .merge(qty_count_3_1, on=id_cols, how='outer')
         .merge(qty_mean_3_1, on=id_cols, how='outer')
-        .merge(qty_mean_3_1, on=id_cols, how='outer')
         .merge(qty_std_3_1, on=id_cols, how='outer')
         .merge(qty_count_2_1, on=id_cols, how='outer')
-        .merge(qty_mean_2_1, on=id_cols, how='outer')
         .merge(qty_mean_2_1, on=id_cols, how='outer')
         .merge(qty_std_2_1, on=id_cols, how='outer')
         .merge(order_type_3_1, on=id_cols, how='outer')
@@ -167,8 +165,7 @@ if __name__ == '__main__':
     for file in reversed(file_to_run):
         print(f'Processing file {file}', flush=True)
         temp = compute_features(start_path+file,t_definition)
-        if '1.247509320.bz2' in temp['file_name']:
-            breakpoint()
+        # breakpoint removed
         # temp.loc[temp['best_lay_q_100_m0']>100,['best_lay_q_100_m0']]
         # temp.loc[temp['file_name']=='1.246471259.bz2',['best_lay_q_100_m0']]
         df = pd.concat([df, temp], ignore_index=False)

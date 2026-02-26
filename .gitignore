@@ -1,0 +1,34 @@
+# SSH keys and credentials
+id_ed25519
+id_ed25519.pub
+id_rsa
+id_rsa.pub
+known_hosts
+known_hosts.old
+config
+.env
+
+# Data and results (too large for git)
+data/
+res/
+models/
+down.tar.gz
+*.parquet
+*.p
+
+# IDE and editor
+.idea/
+.ipynb_checkpoints/
+*.pyc
+__pycache__/
+
+# Virtual environments
+venv/
+venv_comp/
+_05_paper_trading/venv/
+
+# OS
+.DS_Store
+
+# Assignment (unrelated)
+Assignment/
