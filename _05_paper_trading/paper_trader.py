@@ -13,6 +13,7 @@ from config import (
     EDGE_THRESHOLD,
     MIN_BACK_ODDS,
     MAX_BACK_ODDS,
+    MIN_MARKET_PROB,
     COMMISSION_RATE,
     STAKE_SIZE,
     MAX_DAILY_LOSS,
@@ -138,15 +139,23 @@ class PaperTrader:
     - Active (unsettled) bets
     - Daily P&L
     - Kill switch state
+
+    Hooks:
+    - notifier: EmailNotifier for sending alerts on settle/kill-switch
+    - signal_tracker: SignalTracker for recording bets and settlements
     """
 
-    def __init__(self):
+    def __init__(self, notifier=None, signal_tracker=None):
         self.active_bets = []      # Bets awaiting settlement
         self.settled_bets = []     # Completed bets
         self.daily_pnl = 0.0
         self.total_pnl = 0.0
         self.kill_switch_active = False
         self._today = datetime.now(timezone.utc).date()
+
+        # Optional hooks
+        self.notifier = notifier
+        self.signal_tracker = signal_tracker
 
     def evaluate_and_bet(self, predictions_df, market_id, file_name):
         """
@@ -167,19 +176,31 @@ class PaperTrader:
             logger.warning("Kill switch active — not placing bets")
             return []
 
+        if self.signal_tracker and self.signal_tracker.anomaly_pause:
+            logger.warning("Anomaly pause active — not placing bets")
+            return []
+
         new_bets = []
         now = datetime.now(timezone.utc)
+
+        # Use signal tracker's effective threshold if auto-fix bumped it
+        effective_threshold = EDGE_THRESHOLD
+        if self.signal_tracker and self.signal_tracker.edge_threshold_bump > 0:
+            effective_threshold = self.signal_tracker.effective_edge_threshold
+            logger.info(f"Using bumped edge threshold: {effective_threshold:.1%}")
 
         for _, row in predictions_df.iterrows():
             edge = row["edge"]
             back_odds = row["back_odds"]
 
             # Check thresholds
-            if edge <= EDGE_THRESHOLD:
+            if edge <= effective_threshold:
                 continue
             if back_odds <= MIN_BACK_ODDS or back_odds >= MAX_BACK_ODDS:
                 continue
             if pd.isna(row["model_prob"]) or pd.isna(row["market_prob"]):
+                continue
+            if row["market_prob"] < MIN_MARKET_PROB:
                 continue
 
             bet = PaperBet(
@@ -196,6 +217,10 @@ class PaperTrader:
             )
             self.active_bets.append(bet)
             new_bets.append(bet)
+
+            # Record in signal tracker
+            if self.signal_tracker:
+                self.signal_tracker.record_bet(bet)
 
             logger.info(
                 f"Paper bet: {file_name} runner={row['id']} "
@@ -233,6 +258,24 @@ class PaperTrader:
                 f"{status} {fill_str} pnl=${bet.pnl:.2f}"
             )
 
+            # Record in signal tracker
+            if self.signal_tracker:
+                self.signal_tracker.record_settlement(bet)
+
+            # Email notification on filled bet outcome
+            if self.notifier and bet.conservative_fill:
+                daily_record = (
+                    self.signal_tracker.get_daily_record()
+                    if self.signal_tracker
+                    else {"bets_settled": len(self.settled_bets),
+                           "wins": sum(1 for b in self.settled_bets if b.winner),
+                           "losses": sum(1 for b in self.settled_bets if not b.winner),
+                           "fills": sum(1 for b in self.settled_bets if b.conservative_fill)}
+                )
+                self.notifier.notify_bet_settled(
+                    bet, self.daily_pnl, self.total_pnl, daily_record
+                )
+
         # Check kill switch
         if self.daily_pnl < -MAX_DAILY_LOSS:
             self.kill_switch_active = True
@@ -240,6 +283,8 @@ class PaperTrader:
                 f"KILL SWITCH ACTIVATED: daily loss ${self.daily_pnl:.2f} "
                 f"exceeds limit ${MAX_DAILY_LOSS:.2f}"
             )
+            if self.notifier:
+                self.notifier.notify_kill_switch(self.daily_pnl, self.total_pnl)
 
     def get_daily_summary(self):
         """Get summary statistics for today's trading."""

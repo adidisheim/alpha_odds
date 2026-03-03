@@ -39,7 +39,7 @@ Then edit `.env` and fill in:
 
 ```
 BETFAIR_USERNAME=antoinedidisheim@gmail.com
-BETFAIR_PASSWORD=<your_betfair_password>
+BETFAIR_PASSWORD=VViseron6757+
 BETFAIR_APP_KEY=Uebo4sXlb5USEutl
 BETFAIR_CERT_PATH=./certs/client-2048.crt
 BETFAIR_KEY_PATH=./certs/client-2048.key
@@ -51,7 +51,8 @@ Test that cert-based login works:
 
 ```bash
 curl -s -X POST https://identitysso-cert.betfair.com.au/api/certlogin \
-  -d "username=antoinedidisheim@gmail.com&password=<your_password>" \
+  --data-urlencode "username=antoinedidisheim@gmail.com" \
+  --data-urlencode "password=VViseron6757+" \
   -H "X-Application: Uebo4sXlb5USEutl" \
   --cert certs/client-2048.crt \
   --key certs/client-2048.key

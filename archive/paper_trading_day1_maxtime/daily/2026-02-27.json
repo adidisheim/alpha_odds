@@ -1,0 +1,16 @@
+{
+  "date": "2026-02-27",
+  "markets_evaluated": 8,
+  "bets_placed": 8,
+  "bets_filled": 5,
+  "bets_won": 0,
+  "bets_active": 0,
+  "win_rate": 0.0,
+  "fill_rate": 0.625,
+  "daily_pnl": -5.0,
+  "total_pnl": -5.0,
+  "avg_edge": 0.060385207140436964,
+  "avg_odds": 21.4625,
+  "kill_switch": false,
+  "roi_pct": -100.0
+}

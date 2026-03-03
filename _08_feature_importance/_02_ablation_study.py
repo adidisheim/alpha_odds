@@ -1,20 +1,17 @@
 """
-Win Probability Model V2 — Improved with cross-runner features, LightGBM, and calibration.
+Phase 2: Ablation study — retrain V2-style models with feature subsets.
 
-Key improvements over V1 (_02_win_probability_model.py):
-  1. Cross-runner features: rank, relative-to-favorite, Herfindahl index
-  2. LightGBM as alternative (typically better on tabular data)
-  3. Early stopping with validation set
-  4. Isotonic regression post-hoc calibration
-  5. XGBoost + LightGBM ensemble
+Takes the ranked feature list from Phase 1 and retrains with restricted feature sets.
+Uses a single good HP config (best V2 by log-loss) for all ablations.
+
+Feature counts to test: top-5, top-10, top-15, top-20, top-30, top-50, top-80, all
+Array job: task_id = 0..31 (8 feature counts x 4 t_defs)
 
 Usage:
-    python _03_win_probability_model_v2.py <grid_comb_id> <t_definition>
+    python _02_ablation_study.py <task_id>
 
-    grid_comb_id: index into the hyperparameter grid (0-based)
-    t_definition: which time snapshot features to use (0, 1, 2, or 3)
-
-Output saved to: res/win_model_v2/t{t_definition}/{grid_hash}/
+Output:
+    res/feature_importance_study/ablation_{task_id}.parquet
 """
 
 import numpy as np
@@ -24,9 +21,8 @@ from sklearn.metrics import log_loss, brier_score_loss
 from sklearn.isotonic import IsotonicRegression
 import psutil
 import os
-import socket
-import itertools
 import json
+from math import erf, sqrt
 
 from parameters import Constant
 from utils_locals.parser import parse
@@ -40,74 +36,71 @@ except ImportError:
 
 
 # ──────────────────────────────────────────────
-# Hyperparameter grid (smaller, more focused)
+# Configuration
 # ──────────────────────────────────────────────
-GRID_PARAMS = {
-    'n_estimators': [500, 1000, 2000],
-    'max_depth': [4, 6, 8],
-    'learning_rate': [0.01, 0.05, 0.1],
-}
+FEATURE_COUNTS = [5, 10, 15, 20, 30, 50, 80, None]  # None = all features
+N_FEATURE_COUNTS = len(FEATURE_COUNTS)
+T_DEFS = [0, 1, 2, 3]
+N_T_DEFS = len(T_DEFS)
 
-def get_grid_combinations():
-    keys = list(GRID_PARAMS.keys())
-    vals = [GRID_PARAMS[k] for k in keys]
-    return [dict(zip(keys, combo)) for combo in itertools.product(*vals)]
+# Best HP from V2 grid search (will be auto-detected from saved metrics)
+DEFAULT_HP = {'n_estimators': 2000, 'max_depth': 6, 'learning_rate': 0.05}
+
+
+def norm_cdf(x):
+    return 0.5 * (1 + erf(x / sqrt(2)))
+
+
+def find_best_hp(t_def):
+    """Find the best-performing V2 HP config for this t_def by log-loss."""
+    base_dir = f'{Constant.RES_DIR}/win_model_v2/t{t_def}'
+    if not os.path.isdir(base_dir):
+        return DEFAULT_HP
+
+    best_ll = 999
+    best_hp = None
+    for config in os.listdir(base_dir):
+        metrics_path = os.path.join(base_dir, config, 'metrics.json')
+        if not os.path.exists(metrics_path):
+            continue
+        try:
+            with open(metrics_path) as f:
+                metrics = json.load(f)
+            ll = metrics.get('Calibrated_logloss', metrics.get('XGBoost_logloss', 999))
+            if ll < best_ll:
+                best_ll = ll
+                best_hp = metrics.get('hp', None)
+        except Exception:
+            continue
+
+    if best_hp is not None:
+        return best_hp
+    return DEFAULT_HP
 
 
 # ──────────────────────────────────────────────
-# Cross-runner features
+# Cross-runner features (copied from V2 pipeline)
 # ──────────────────────────────────────────────
 def add_cross_runner_features(df):
-    """
-    Add features that capture how each runner compares to others in the same race.
-    All computed at decision time (using _m0 snapshots).
-    """
     g = df.groupby('file_name')
-
-    # 1. Market implied probability (mid of back/lay at m0)
     df['market_prob'] = df[['best_back_m0', 'best_lay_m0']].mean(axis=1)
-
-    # 2. Probability rank within race (1 = favorite = highest prob)
     df['prob_rank'] = g['market_prob'].rank(method='min', ascending=False)
-
-    # 3. Probability relative to the favorite
     df['prob_vs_favorite'] = df['market_prob'] / g['market_prob'].transform('max')
-
-    # 4. Probability share (runner's fraction of total probability in race)
     df['prob_share'] = df['market_prob'] / g['market_prob'].transform('sum')
-
-    # 5. Herfindahl index (race competitiveness — lower = more competitive)
     df['_prob_share_sq'] = df['prob_share'] ** 2
     df['race_herfindahl'] = df.groupby('file_name')['_prob_share_sq'].transform('sum')
     df.drop(columns=['_prob_share_sq'], inplace=True)
-
-    # 6. Number of "close" runners (within 0.05 implied prob)
-    # Vectorized: for each runner, count how many others in the same race are within 0.05
     race_std = g['market_prob'].transform('std').fillna(0)
     df['n_close_runners'] = (race_std < 0.05).astype(int) * (g['market_prob'].transform('count') - 1)
-
-    # 7. Spread (back - lay in implied prob space) — tighter = more liquid
     df['spread_m0'] = (df['best_back_m0'] - df['best_lay_m0']).abs()
     df['spread_rank'] = g['spread_m0'].rank(method='min', ascending=True)
-
-    # 8. Volume rank (total qty at m0)
     df['total_qty_m0'] = df['total_back_qty_m0'] + df['total_lay_qty_m0']
     df['volume_rank'] = g['total_qty_m0'].rank(method='min', ascending=False)
-
-    # 9. Momentum rank (who is moving the most)
     df['avg_mom_3_1'] = df[['best_back_mom_3_1', 'best_lay_mom_3_1']].mean(axis=1)
     df['momentum_rank'] = g['avg_mom_3_1'].rank(method='min', ascending=False)
-
-    # 10. Overround (sum of all implied probs in race — should be > 1)
     df['race_overround'] = g['market_prob'].transform('sum')
-
-    # 11. Is this the favorite?
     df['is_favorite'] = (df['prob_rank'] == 1).astype(int)
-
-    # 12. Price deviation from race mean
     df['prob_deviation'] = df['market_prob'] - g['market_prob'].transform('mean')
-
-    # 13. Back/lay imbalance relative to race
     df['bl_imbalance_m0'] = df['best_bl_imbalance_m0']
     df['bl_imbalance_rank'] = g['bl_imbalance_m0'].rank(method='min', ascending=False)
 
@@ -121,11 +114,10 @@ def add_cross_runner_features(df):
 
 
 # ──────────────────────────────────────────────
-# Feature normalizer
+# Feature normalizer (copied from V2 pipeline)
 # ──────────────────────────────────────────────
 class FeatureNormalizer:
     def __init__(self, predictors_col):
-        # Deduplicate while preserving order
         seen = set()
         deduped = []
         for c in predictors_col:
@@ -164,7 +156,6 @@ class FeatureNormalizer:
     def normalize_ins(self, df):
         df = df.copy()
         miss = df[self.predictors_col].isna().mean()
-        # Use dict for robust scalar lookup (avoids Series ambiguity with duplicate index)
         miss_dict = miss.to_dict()
         self.high_missing_cols = [c for c in self.predictors_col if miss_dict.get(c, 0.0) > 0.5]
         for c in self.high_missing_cols:
@@ -229,35 +220,46 @@ class FeatureNormalizer:
 # ──────────────────────────────────────────────
 if __name__ == '__main__':
     args = parse()
-    t_definition = args.b
-    grid_combs = get_grid_combinations()
-    if args.a >= len(grid_combs):
-        print(f"Grid index {args.a} out of range (max {len(grid_combs)-1}). Exiting.", flush=True)
-        exit(0)
+    task_id = args.a
 
-    hp = grid_combs[args.a]
-    print(f"=== Win Probability Model V2 ===", flush=True)
-    print(f"Grid combo {args.a}/{len(grid_combs)}: {hp}", flush=True)
-    print(f"t_definition: {t_definition}", flush=True)
-    print(f"LightGBM available: {HAS_LGBM}", flush=True)
+    # Decode task_id -> (feature_count_idx, t_def)
+    feat_idx = task_id % N_FEATURE_COUNTS
+    t_def_idx = task_id // N_FEATURE_COUNTS
+    n_features_target = FEATURE_COUNTS[feat_idx]
+    t_definition = T_DEFS[t_def_idx]
 
-    # ── Load features (prefer merged file) ──
+    feat_label = str(n_features_target) if n_features_target else 'all'
+    print(f"=== Ablation Study ===", flush=True)
+    print(f"Task {task_id}: top-{feat_label} features, t_def={t_definition}", flush=True)
+
+    # ── Load feature ranking from Phase 1 ──
+    ranking_path = f'{Constant.RES_DIR}/feature_importance_study/feature_ranking.parquet'
+    if not os.path.exists(ranking_path):
+        print(f"ERROR: Feature ranking not found at {ranking_path}", flush=True)
+        print("Run Phase 1 (_01_collect_importances.py) first!", flush=True)
+        exit(1)
+    ranking = pd.read_parquet(ranking_path)
+    all_ranked_features = ranking['feature'].tolist()
+    print(f"Loaded ranking with {len(all_ranked_features)} features.", flush=True)
+
+    # ── Find best HP for this t_def ──
+    hp = find_best_hp(t_definition)
+    print(f"Using HP: {hp}", flush=True)
+
+    # ── Load features ──
     load_dir = f'{Constant.RES_DIR}/features_t{t_definition}'
     merged_path = f'{load_dir}/greyhound_au_features_merged.parquet'
     if os.path.exists(merged_path):
         print(f"Loading merged features from {merged_path}", flush=True)
         df = pd.read_parquet(merged_path)
     else:
-        print(f"Merged file not found, loading parts...", flush=True)
+        print(f"Loading feature parts...", flush=True)
         df = pd.DataFrame()
         for i in range(10):
             try:
                 df = pd.concat([df, pd.read_parquet(f'{load_dir}/greyhound_au_features_part_{i}.parquet')], ignore_index=False)
             except Exception as e:
-                print(f'Non-fatal ERROR: Could not read part {i}: {e}', flush=True)
-
-    if socket.gethostname() == 'UML-FNQ2JDW1GV':
-        df = df.dropna(subset='file_name').sample(frac=1, random_state=42).head(20000)
+                print(f'  Part {i}: {e}', flush=True)
 
     process = psutil.Process(os.getpid())
     print(f"RAM after load: {process.memory_info().rss / 1024**3:.2f} GB", flush=True)
@@ -266,17 +268,15 @@ if __name__ == '__main__':
     # ── Define target ──
     df['win'] = (df['id'] == -1).astype(int)
 
-    # ── Drop rows with missing order book data ──
+    # ── Drop NaN order book ──
     n_before = len(df)
     df = df.dropna(subset=['best_back_m0', 'best_lay_m0'])
-    print(f"Dropped {n_before - len(df)} rows with NaN best_back/lay_m0 ({(n_before - len(df))/n_before*100:.2f}%)", flush=True)
+    print(f"Dropped {n_before - len(df)} rows with NaN best_back/lay_m0", flush=True)
 
     # ── Add cross-runner features ──
-    print("Adding cross-runner features...", flush=True)
     df, cross_runner_cols = add_cross_runner_features(df)
-    print(f"Added {len(cross_runner_cols)} cross-runner features.", flush=True)
 
-    # ── Define predictors ──
+    # ── Build full predictor list (same as V2) ──
     suffix_available_at_t0 = [
         "_count_2_1", "_count_3_1", "_mean_2_1", "_mean_3_1",
         "_m0", "_mom_2_1", "_mom_3_1",
@@ -288,7 +288,8 @@ if __name__ == '__main__':
     # Fraction features
     df['total_qty_m1'] = df[['total_back_qty_m1', 'total_lay_qty_m1']].sum(axis=1)
     df['total_qty_m3'] = df[['total_back_qty_m3', 'total_lay_qty_m3']].sum(axis=1)
-    col_todo = ['total_qty_m1','total_back_qty_m1','total_lay_qty_m1','total_qty_m3','total_back_qty_m3','total_lay_qty_m3']
+    col_todo = ['total_qty_m1', 'total_back_qty_m1', 'total_lay_qty_m1',
+                'total_qty_m3', 'total_back_qty_m3', 'total_lay_qty_m3']
     col_frac = []
     for col in col_todo:
         c = col + '_frac'
@@ -306,13 +307,44 @@ if __name__ == '__main__':
 
     fixed_effect_columns = ['local_dow', 'marketBaseRate', 'numberOfActiveRunners']
     predictors_col = predictors_col + fixed_effect_columns
-
-    # Add cross-runner features to predictors
     predictors_col = predictors_col + cross_runner_cols
+
+    # Deduplicate
+    seen = set()
+    deduped = []
+    for c in predictors_col:
+        if c not in seen:
+            seen.add(c)
+            deduped.append(c)
+    predictors_col = deduped
+
+    full_n_features = len(predictors_col)
+    print(f"Full feature set: {full_n_features} features", flush=True)
+
+    # ── Feature subsetting ──
+    # Only keep features that are in the ranking AND in our predictors_col
+    # Ranked features may include _missing indicators added during normalization;
+    # we handle those by letting the normalizer add them later
+    if n_features_target is not None:
+        # Take top-N from ranking that exist in our predictor list
+        ranked_available = [f for f in all_ranked_features if f in predictors_col]
+        # Also check if ranked features have _missing variants we need
+        n_to_keep = min(n_features_target, len(ranked_available))
+        selected_features = ranked_available[:n_to_keep]
+
+        # Always include market_prob dependencies (best_back_m0, best_lay_m0)
+        # since we need them for edge calculation
+        for essential in ['best_back_m0', 'best_lay_m0']:
+            if essential not in selected_features and essential in predictors_col:
+                selected_features.append(essential)
+
+        predictors_col = selected_features
+        print(f"Restricted to top-{n_features_target}: {len(predictors_col)} features available", flush=True)
+    else:
+        print(f"Using all {full_n_features} features", flush=True)
 
     # ── Train/Val/Test split ──
     oos_year = 2025
-    # Use 2024 as validation for early stopping, 2017-2023 as train
     val_year = 2024
     train_years = df['marketTime_local'].dt.year.unique()
     train_years = [int(x) for x in train_years if x not in [oos_year, val_year]]
@@ -321,15 +353,10 @@ if __name__ == '__main__':
     ind_val = df['marketTime_local'].dt.year == val_year
     ind_oos = df['marketTime_local'].dt.year == oos_year
 
-    print(f"Train: {ind_train.sum()} rows ({train_years})", flush=True)
-    print(f"Val: {ind_val.sum()} rows ({val_year})", flush=True)
-    print(f"OOS: {ind_oos.sum()} rows ({oos_year})", flush=True)
-    print(f"Train win rate: {df.loc[ind_train, 'win'].mean():.4f}", flush=True)
-    print(f"Val win rate: {df.loc[ind_val, 'win'].mean():.4f}", flush=True)
-    print(f"OOS win rate: {df.loc[ind_oos, 'win'].mean():.4f}", flush=True)
+    print(f"Train: {ind_train.sum()} rows, Val: {ind_val.sum()}, OOS: {ind_oos.sum()}", flush=True)
 
-    # ── Preserve original prices and marketBaseRate for betting simulation (before normalization z-scores them) ──
-    original_cols = ['best_back_m0', 'best_lay_m0', 'best_back_q_100_m0', 'best_lay_q_100_m0', 'marketBaseRate']
+    # ── Preserve original prices before normalization ──
+    original_cols = ['best_back_m0', 'best_lay_m0', 'marketBaseRate']
     original_cols = [c for c in original_cols if c in df.columns]
     oos_originals = df.loc[ind_oos, original_cols].copy()
 
@@ -338,18 +365,19 @@ if __name__ == '__main__':
     df_train = normalizer.normalize_ins(df.loc[ind_train, :])
     df_val = normalizer.normalize_oos(df.loc[ind_val, :])
     df_oos = normalizer.normalize_oos(df.loc[ind_oos, :])
-    predictors_col = normalizer.predictors_col
+    predictors_col = normalizer.predictors_col  # may have _missing cols added
 
     df_train = df_train.dropna(subset=['win'])
     df_val = df_val.dropna(subset=['win'])
     df_oos = df_oos.dropna(subset=['win'])
 
-    print(f"\nFeatures: {len(predictors_col)}", flush=True)
+    actual_n_features = len(predictors_col)
+    print(f"Final feature count (after normalization): {actual_n_features}", flush=True)
 
     # ══════════════════════════════════════════════
-    # Model 1: XGBoost with early stopping
+    # Train XGBoost
     # ══════════════════════════════════════════════
-    print(f"\n=== Training XGBClassifier with {hp} ===", flush=True)
+    print(f"\n=== Training XGBoost ({hp}) ===", flush=True)
     xgb_model = XGBClassifier(
         n_estimators=hp['n_estimators'],
         max_depth=hp['max_depth'],
@@ -366,7 +394,7 @@ if __name__ == '__main__':
         verbose=False,
     )
     xgb_best_iter = xgb_model.best_iteration
-    print(f"XGBoost best iteration: {xgb_best_iter} / {hp['n_estimators']}", flush=True)
+    print(f"XGBoost best iteration: {xgb_best_iter}", flush=True)
 
     df_oos = df_oos.copy()
     df_oos['xgb_prob'] = xgb_model.predict_proba(df_oos[predictors_col])[:, 1]
@@ -374,7 +402,7 @@ if __name__ == '__main__':
     df_val['xgb_prob'] = xgb_model.predict_proba(df_val[predictors_col])[:, 1]
 
     # ══════════════════════════════════════════════
-    # Model 2: LightGBM (if available)
+    # Train LightGBM
     # ══════════════════════════════════════════════
     if HAS_LGBM:
         print(f"\n=== Training LightGBM ===", flush=True)
@@ -393,13 +421,11 @@ if __name__ == '__main__':
             eval_set=[(df_val[predictors_col], df_val['win'])],
             callbacks=[lgb.early_stopping(50, verbose=False), lgb.log_evaluation(0)],
         )
-        lgb_best_iter = lgb_model.best_iteration_
-        print(f"LightGBM best iteration: {lgb_best_iter} / {hp['n_estimators']}", flush=True)
+        print(f"LightGBM best iteration: {lgb_model.best_iteration_}", flush=True)
 
         df_oos['lgb_prob'] = lgb_model.predict_proba(df_oos[predictors_col])[:, 1]
         df_val['lgb_prob'] = lgb_model.predict_proba(df_val[predictors_col])[:, 1]
 
-        # Ensemble: simple average
         df_oos['ensemble_prob'] = 0.5 * df_oos['xgb_prob'] + 0.5 * df_oos['lgb_prob']
         df_val['ensemble_prob'] = 0.5 * df_val['xgb_prob'] + 0.5 * df_val['lgb_prob']
     else:
@@ -407,73 +433,68 @@ if __name__ == '__main__':
         df_val['ensemble_prob'] = df_val['xgb_prob']
 
     # ══════════════════════════════════════════════
-    # Post-hoc calibration (isotonic regression on validation set)
+    # Isotonic calibration
     # ══════════════════════════════════════════════
-    print(f"\n=== Calibrating with isotonic regression ===", flush=True)
     iso_reg = IsotonicRegression(y_min=0.001, y_max=0.999, out_of_bounds='clip')
     iso_reg.fit(df_val['ensemble_prob'].values, df_val['win'].values)
     df_oos['calibrated_prob'] = iso_reg.predict(df_oos['ensemble_prob'].values)
-
-    # Final model probability
     df_oos['model_prob'] = df_oos['calibrated_prob']
 
-    # ── Edge ──
+    # ── Edge (market_prob already set by add_cross_runner_features before normalization) ──
     df_oos['edge'] = df_oos['model_prob'] - df_oos['market_prob']
 
     # ══════════════════════════════════════════════
-    # Evaluation
+    # Evaluation metrics
     # ══════════════════════════════════════════════
+    market_ll = log_loss(df_oos['win'], df_oos['market_prob'].clip(0.001, 0.999))
+    xgb_ll = log_loss(df_oos['win'], df_oos['xgb_prob'])
+    cal_ll = log_loss(df_oos['win'], df_oos['calibrated_prob'])
+    market_brier = brier_score_loss(df_oos['win'], df_oos['market_prob'].clip(0.001, 0.999))
+    cal_brier = brier_score_loss(df_oos['win'], df_oos['calibrated_prob'])
+
     print(f"\n{'='*60}", flush=True)
-    print(f"=== OOS Evaluation (t_def={t_definition}, hp={hp}) ===", flush=True)
+    print(f"OOS Results: top-{feat_label}, t_def={t_definition}", flush=True)
     print(f"{'='*60}", flush=True)
+    print(f"  Market LL:     {market_ll:.6f}", flush=True)
+    print(f"  XGBoost LL:    {xgb_ll:.6f}", flush=True)
+    print(f"  Calibrated LL: {cal_ll:.6f}", flush=True)
+    print(f"  Market Brier:  {market_brier:.6f}", flush=True)
+    print(f"  Cal Brier:     {cal_brier:.6f}", flush=True)
 
-    models_to_eval = {
-        'Market': df_oos['market_prob'].clip(0.001, 0.999),
-        'XGBoost': df_oos['xgb_prob'],
-        'Calibrated': df_oos['calibrated_prob'],
-    }
-    if HAS_LGBM:
-        models_to_eval['LightGBM'] = df_oos['lgb_prob']
-        models_to_eval['Ensemble'] = df_oos['ensemble_prob']
-
-    for name, probs in models_to_eval.items():
-        ll = log_loss(df_oos['win'], probs)
-        bs = brier_score_loss(df_oos['win'], probs)
-        print(f"  {name:12s}  Log-loss: {ll:.6f}  Brier: {bs:.6f}", flush=True)
-
-    # ── Calibration by decile ──
-    df_oos['prob_decile'] = pd.qcut(df_oos['model_prob'], 10, labels=False, duplicates='drop')
-    calibration = df_oos.groupby('prob_decile').agg(
-        mean_predicted=('model_prob', 'mean'),
-        mean_actual=('win', 'mean'),
-        mean_market=('market_prob', 'mean'),
-        mean_xgb=('xgb_prob', 'mean'),
-        mean_edge=('edge', 'mean'),
-        count=('win', 'count'),
-    ).reset_index()
-    print(f"\n=== Calibration Table ===", flush=True)
-    print(calibration.to_string(index=False), flush=True)
-
-    # ── Value betting simulation ──
-    # Restore original prices and commission BEFORE using them
+    # ══════════════════════════════════════════════
+    # Value betting backtest
+    # ══════════════════════════════════════════════
     df_oos['orig_best_back_m0'] = oos_originals['best_back_m0'].values
-    df_oos['orig_best_lay_m0'] = oos_originals['best_lay_m0'].values
-    df_oos['orig_marketBaseRate'] = oos_originals['marketBaseRate'].values
+    df_oos['orig_best_lay_m0'] = oos_originals['best_lay_m0'].values if 'best_lay_m0' in oos_originals.columns else np.nan
+    df_oos['orig_marketBaseRate'] = oos_originals['marketBaseRate'].values if 'marketBaseRate' in oos_originals.columns else 8.0
 
     commission_rate = df_oos['orig_marketBaseRate'].median() / 100
-    print(f"\nCommission rate: {commission_rate:.4f} (from original marketBaseRate median: {df_oos['orig_marketBaseRate'].median():.2f})", flush=True)
+    if np.isnan(commission_rate) or commission_rate <= 0:
+        commission_rate = 0.075
 
     bet_results = []
-    for edge_threshold in [0.01, 0.02, 0.03, 0.05, 0.07, 0.10, 0.15]:
+    for edge_threshold in [0.01, 0.02, 0.03, 0.05, 0.07, 0.10]:
         bets = df_oos[df_oos['edge'] > edge_threshold].copy()
         if len(bets) == 0:
-            print(f"\nEdge threshold {edge_threshold}: no qualifying bets", flush=True)
+            bet_results.append({
+                'edge_threshold': edge_threshold,
+                'n_bets': 0, 'win_rate': np.nan, 'avg_odds': np.nan,
+                'total_pnl': 0, 'avg_pnl': np.nan, 'roi_pct': np.nan,
+                'sharpe': np.nan,
+            })
             continue
+
         bets['back_odds'] = 1 / bets['orig_best_back_m0']
         bets = bets[(bets['back_odds'] > 1.01) & (bets['back_odds'] < 1000)]
         if len(bets) == 0:
-            print(f"\nEdge threshold {edge_threshold}: no valid bets after odds filter", flush=True)
+            bet_results.append({
+                'edge_threshold': edge_threshold,
+                'n_bets': 0, 'win_rate': np.nan, 'avg_odds': np.nan,
+                'total_pnl': 0, 'avg_pnl': np.nan, 'roi_pct': np.nan,
+                'sharpe': np.nan,
+            })
             continue
+
         bets['pnl'] = bets['win'] * (bets['back_odds'] - 1) * (1 - commission_rate) - (1 - bets['win'])
         n_bets = len(bets)
         total_pnl = bets['pnl'].sum()
@@ -483,80 +504,75 @@ if __name__ == '__main__':
         pnl_std = bets['pnl'].std()
         sharpe = avg_pnl / pnl_std * np.sqrt(n_bets) if pnl_std > 0 else 0
 
-        # Monthly P&L for drawdown
+        # Monthly Sharpe (annualized)
         bets['month'] = pd.to_datetime(bets['marketTime_local']).dt.to_period('M')
         monthly = bets.groupby('month')['pnl'].sum()
-        cum_pnl = monthly.cumsum()
-        max_dd = (cum_pnl - cum_pnl.cummax()).min()
+        sharpe_monthly = monthly.mean() / monthly.std() * np.sqrt(12) if monthly.std() > 0 else 0
 
-        print(f"\nEdge threshold {edge_threshold}:", flush=True)
-        print(f"  Bets: {n_bets}, Win rate: {win_rate:.4f}, Avg odds: {avg_odds:.1f}", flush=True)
-        print(f"  Total P&L: ${total_pnl:.2f}, Avg P&L: ${avg_pnl:.4f}, ROI: {avg_pnl*100:.2f}%", flush=True)
-        print(f"  Sharpe: {sharpe:.2f}, Max monthly drawdown: ${max_dd:.2f}", flush=True)
+        # z-stat and p-value
+        z = avg_pnl / pnl_std * np.sqrt(n_bets) if pnl_std > 0 else 0
+        p_value = 1 - norm_cdf(z)
+
+        print(f"\n  Edge>{edge_threshold}: {n_bets} bets, ROI={avg_pnl*100:+.1f}%, "
+              f"Sharpe={sharpe_monthly:.1f}, z={z:.2f}, p={p_value:.4f}, "
+              f"$25/bet=${total_pnl*25:,.0f}", flush=True)
 
         bet_results.append({
             'edge_threshold': edge_threshold,
             'n_bets': n_bets, 'win_rate': win_rate, 'avg_odds': avg_odds,
             'total_pnl': total_pnl, 'avg_pnl': avg_pnl, 'roi_pct': avg_pnl * 100,
-            'sharpe': sharpe, 'max_drawdown': max_dd,
+            'sharpe': sharpe, 'sharpe_annual': sharpe_monthly,
+            'z_stat': z, 'p_value': p_value,
+            'profit_25': total_pnl * 25,
         })
-
-    # ══════════════════════════════════════════════
-    # Feature importance
-    # ══════════════════════════════════════════════
-    print(f"\n=== Top 20 Feature Importances (XGBoost) ===", flush=True)
-    importances = pd.DataFrame({
-        'feature': predictors_col,
-        'importance': xgb_model.feature_importances_
-    }).sort_values('importance', ascending=False)
-    print(importances.head(20).to_string(index=False), flush=True)
 
     # ══════════════════════════════════════════════
     # Save results
     # ══════════════════════════════════════════════
-    hp_str = f"ne{hp['n_estimators']}_md{hp['max_depth']}_lr{hp['learning_rate']}"
-    save_dir = f'{Constant.RES_DIR}/win_model_v2/t{t_definition}/{hp_str}/'
-    os.makedirs(save_dir, exist_ok=True)
+    out_dir = f'{Constant.RES_DIR}/feature_importance_study'
+    os.makedirs(out_dir, exist_ok=True)
 
-    # Save OOS predictions
-    save_cols = ['file_name', 'id', 'win', 'model_prob', 'market_prob', 'edge',
-                 'xgb_prob', 'calibrated_prob',
-                 'orig_best_back_m0', 'orig_best_lay_m0',
-                 'marketBaseRate', 'numberOfActiveRunners', 'local_dow', 'runner_position',
-                 'marketTime_local']
-    if HAS_LGBM:
-        save_cols.insert(7, 'lgb_prob')
-        save_cols.insert(8, 'ensemble_prob')
-    save_cols = [c for c in save_cols if c in df_oos.columns]
-    df_oos[save_cols].to_parquet(save_dir + 'save_df.parquet')
+    # Build summary row for each edge threshold
+    rows = []
+    for br in bet_results:
+        row = {
+            'task_id': int(task_id),
+            'n_features_target': int(n_features_target) if n_features_target else full_n_features,
+            'n_features_actual': actual_n_features,
+            'feat_label': feat_label,
+            't_definition': int(t_definition),
+            'hp': str(hp),
+            'has_lgbm': bool(HAS_LGBM),
+            'xgb_best_iter': int(xgb_best_iter),
+            'n_oos': int(ind_oos.sum()),
+            'market_logloss': float(market_ll),
+            'calibrated_logloss': float(cal_ll),
+            'xgb_logloss': float(xgb_ll),
+            'market_brier': float(market_brier),
+            'calibrated_brier': float(cal_brier),
+        }
+        row.update(br)
+        rows.append(row)
 
-    # Save calibration and betting results
-    calibration.to_parquet(save_dir + 'calibration.parquet')
-    if bet_results:
-        pd.DataFrame(bet_results).to_parquet(save_dir + 'bet_results.parquet')
+    result_df = pd.DataFrame(rows)
+    save_path = os.path.join(out_dir, f'ablation_{task_id}.parquet')
+    result_df.to_parquet(save_path, index=False)
 
-    # Save feature importances
-    importances.to_parquet(save_dir + 'feature_importances.parquet')
+    # Save per-runner OOS predictions for cross-t ensemble assembly
+    pred_cols = ['file_name', 'id', 'win', 'model_prob', 'market_prob',
+                 'orig_best_back_m0', 'orig_best_lay_m0', 'marketTime_local']
+    pred_cols = [c for c in pred_cols if c in df_oos.columns]
+    pred_path = os.path.join(out_dir, f'predictions_{task_id}.parquet')
+    df_oos[pred_cols].to_parquet(pred_path, index=False)
+    print(f"Saved {len(df_oos)} per-runner predictions to {pred_path}", flush=True)
+    print(f"\nSaved results to {save_path}", flush=True)
 
-    # Save models
-    xgb_model.save_model(save_dir + 'xgboost_model.json')
-    if HAS_LGBM:
-        lgb_model.booster_.save_model(save_dir + 'lightgbm_model.txt')
+    # Also save the feature list used
+    feat_list_path = os.path.join(out_dir, f'features_used_{task_id}.txt')
+    with open(feat_list_path, 'w') as f:
+        for feat in predictors_col:
+            f.write(feat + '\n')
 
-    # Save metrics summary
-    metrics = {
-        'hp': hp,
-        't_definition': int(t_definition),
-        'xgb_best_iter': int(xgb_best_iter),
-        'n_features': int(len(predictors_col)),
-        'n_cross_runner_features': int(len(cross_runner_cols)),
-        'has_lgbm': bool(HAS_LGBM),
-    }
-    for name, probs in models_to_eval.items():
-        metrics[f'{name}_logloss'] = float(log_loss(df_oos['win'], probs))
-        metrics[f'{name}_brier'] = float(brier_score_loss(df_oos['win'], probs))
-    with open(save_dir + 'metrics.json', 'w') as f:
-        json.dump(metrics, f, indent=2)
-
-    print(f"\nAll saved to {save_dir}", flush=True)
+    print(f"Features used saved to {feat_list_path}", flush=True)
+    print(f"\nRAM: {process.memory_info().rss / 1024**3:.2f} GB", flush=True)
     print("Done!", flush=True)

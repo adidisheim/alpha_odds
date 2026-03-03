@@ -1,0 +1,35 @@
+{
+  "date": "2026-02-26",
+  "comparison": {
+    "live": {
+      "hours_running": 2.6,
+      "markets_evaluated": 1,
+      "bets_placed": 0,
+      "bets_filled": 0,
+      "wins": 0,
+      "losses": 0,
+      "bets_per_hour": 0.0,
+      "avg_v1_cross": 0.077,
+      "avg_edge_all_runners": -0.0474,
+      "pct_positive_edge": 0.125
+    },
+    "backtest": {
+      "bets_per_day": 6.6,
+      "avg_edge": 0.045,
+      "avg_odds": 5.0,
+      "avg_model_prob": 0.25,
+      "avg_market_prob": 0.2,
+      "fill_rate": 0.97,
+      "roi_pct": 19.0,
+      "win_rate": 0.23
+    },
+    "deviations": {
+      "bets_per_day": {
+        "live": 0.0,
+        "backtest": 6.6,
+        "pct_deviation": -100.0
+      }
+    }
+  },
+  "anomaly_history": []
+}

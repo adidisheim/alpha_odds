@@ -21,6 +21,15 @@ def compute_features(paths, t_definition = 0):
     id_cols = ['file_name', 'id']
     df['runner_position'] = pd.to_numeric(df['runner_position'])
 
+    # Load in-play times for this day partition
+    inplay_path = paths.replace('win_', 'inplay_')
+    if os.path.exists(inplay_path):
+        inplay_df = pd.read_parquet(inplay_path)
+    else:
+        # Fallback: try the merged file
+        inplay_path_all = os.path.join(os.path.dirname(paths), 'in_play_times_all.parquet')
+        inplay_df = pd.read_parquet(inplay_path_all)
+
     # mdef = mdef.loc[mdef['marketType'] == 'WIN', :].copy()
     mdef["marketTime_local"] = mdef.apply(lambda r: pd.to_datetime(r.marketTime, utc=True).tz_convert(r.timezone), axis=1)
     mdef["marketTime_local"] = pd.to_datetime(mdef["marketTime_local"].apply(lambda x: str(x).split(' ')[0]), errors='coerce')
@@ -33,7 +42,19 @@ def compute_features(paths, t_definition = 0):
     df = df.reset_index()
     if df.columns[0] == 'index':
         df = df.rename(columns={'index':'time'})
-    df['time_delta'] = df.groupby('file_name')['time'].transform('max') - df['time']
+
+    # Use in-play time (SUSPENDED transition) as reference instead of max(time) per race
+    df = df.merge(inplay_df[['file_name', 'in_play_time']], on='file_name', how='left')
+    n_before = len(df)
+    df = df.dropna(subset=['in_play_time'])
+    n_after = len(df)
+    if n_before > n_after:
+        print(f'  Dropped {n_before - n_after} rows ({(n_before-n_after)/n_before*100:.1f}%) without in-play time', flush=True)
+    # Strip timezone from in_play_time to match tz-naive time column in win_ parquets
+    df['in_play_time'] = df['in_play_time'].dt.tz_localize(None)
+    df['time_delta'] = df['in_play_time'] - df['time']
+    df['time_delta'] = df['time_delta'].clip(lower=pd.Timedelta(0))
+    df = df.drop(columns=['in_play_time'])
 
     # define the exact time values for the snapshot
     if t_definition == 0:

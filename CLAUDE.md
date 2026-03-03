@@ -32,6 +32,9 @@ The pipeline processes raw BZ2-compressed JSON streaming data through feature en
 7. ~~Fill rate simulation~~ — 97% conservative fill rate confirmed via tick replay
 8. ~~Reports~~ — Model report (`res/alpha_odds_report.pdf`) + fill report (`res/fill_simulation/fill_analysis_report.pdf`)
 
+**Investigated and rejected:**
+9. ~~Dog track record features~~ — Extracted 82,958 unique dog identities from mdef parquets, computed 11 per-dog historical features (win rate, recent form, venue stats, streak, etc.). Full pipeline replication: 108 V1 + 108 V2 models across all 4 t_defs, cross-t super-ensemble. **Result: no improvement.** Dog ensemble LL=0.316354 vs original LL=0.316316 (+0.012% worse). Backtest at edge>3%: dog $7,035 vs original $9,403. The Betfair market efficiently prices in dog history — the current market microstructure features already capture this. Code archived in `archive/_06_dog_track_record/`, results on Spartan in `res/dog_features/`.
+
 **Next:** Paper trading → live testing with small stakes → scale up (see `NEXT_STEPS.md`)
 
 ### Best Model: Cross-t Super-Ensemble
@@ -94,6 +97,25 @@ ssh adidishe@spartan.hpc.unimelb.edu.au "squeue -u adidishe"              # List
 ssh adidishe@spartan.hpc.unimelb.edu.au "tail -50 /home/adidishe/alpha_odds/out/<job>.out"  # Check output
 ssh adidishe@spartan.hpc.unimelb.edu.au "scancel <job_id>"                # Cancel a job
 ```
+
+### MANDATORY: sbatch Job Monitoring Protocol
+
+**After EVERY `sbatch` submission, you MUST follow this protocol — no exceptions:**
+
+1. Capture the job ID from sbatch output (e.g., `Submitted batch job 12345678`)
+2. Immediately launch `spartan-wait` as a **background bash command** (`run_in_background: true`):
+   ```bash
+   # run_in_background: true
+   bash ~/bin/spartan-wait <JOBID> "/home/adidishe/alpha_odds/out/<script>_%a.out"
+   ```
+3. Continue other work — you will be **automatically notified** when the job finishes
+4. When notified, read the output files and verify success before proceeding to any downstream step
+
+**Critical rules:**
+- NEVER submit a job without launching `spartan-wait` in the background
+- NEVER proceed to downstream steps (merge, analysis, next stage) without confirmation that the job finished
+- The monitor tracks by job ID — it only watches YOUR job, not other users'/instances' jobs
+- For array jobs, `squeue -j <JOBID>` naturally covers all array tasks — the monitor waits for ALL to complete
 
 ### Downloading Results
 ```bash

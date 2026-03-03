@@ -1,0 +1,68 @@
+{
+  "date": "2026-02-27",
+  "comparison": {
+    "live": {
+      "hours_running": 7.4,
+      "markets_evaluated": 82,
+      "bets_placed": 8,
+      "bets_filled": 5,
+      "wins": 0,
+      "losses": 5,
+      "bets_per_hour": 1.08,
+      "avg_edge": 0.0604,
+      "std_edge": 0.0166,
+      "median_edge": 0.0603,
+      "max_edge": 0.095,
+      "avg_model_prob": 0.1235,
+      "std_model_prob": 0.0412,
+      "avg_market_prob": 0.0631,
+      "avg_odds": 21.46,
+      "median_odds": 18.5,
+      "win_rate": 0.0,
+      "fill_rate": 0.625,
+      "roi_pct": -100.0,
+      "avg_v1_cross": 0.0795,
+      "avg_v2_cross": 0.0824,
+      "avg_edge_all_runners": -0.0583,
+      "pct_positive_edge": 0.232
+    },
+    "backtest": {
+      "bets_per_day": 6.6,
+      "avg_edge": 0.045,
+      "avg_odds": 5.0,
+      "avg_model_prob": 0.25,
+      "avg_market_prob": 0.2,
+      "fill_rate": 0.97,
+      "roi_pct": 19.0,
+      "win_rate": 0.23
+    },
+    "deviations": {
+      "avg_edge": {
+        "live": 0.0604,
+        "backtest": 0.045,
+        "pct_deviation": 34.2
+      },
+      "avg_odds": {
+        "live": 21.46,
+        "backtest": 5.0,
+        "pct_deviation": 329.2
+      },
+      "avg_model_prob": {
+        "live": 0.1235,
+        "backtest": 0.25,
+        "pct_deviation": -50.6
+      },
+      "avg_market_prob": {
+        "live": 0.0631,
+        "backtest": 0.2,
+        "pct_deviation": -68.5
+      },
+      "bets_per_day": {
+        "live": 14.04,
+        "backtest": 6.6,
+        "pct_deviation": 112.7
+      }
+    }
+  },
+  "anomaly_history": []
+}

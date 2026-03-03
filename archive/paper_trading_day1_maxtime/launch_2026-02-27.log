@@ -1,0 +1,624 @@
+2026-02-27 12:00:11,637 [INFO] notifier: Email notifications enabled via claude-email-mcp Gmail API
+2026-02-27 12:00:11,638 [INFO] __main__: ============================================================
+2026-02-27 12:00:11,638 [INFO] __main__: Paper Trading System Starting
+2026-02-27 12:00:11,638 [INFO] __main__: Dry run: False
+2026-02-27 12:00:11,638 [INFO] __main__: ============================================================
+2026-02-27 12:00:11,638 [INFO] __main__: Loading model artifacts...
+2026-02-27 12:00:11,638 [INFO] model_engine: Loading models from /home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/models
+2026-02-27 12:00:13,418 [INFO] model_engine:   t0: 7 V1 + 15 V2 models
+2026-02-27 12:00:14,844 [INFO] model_engine:   t1: 7 V1 + 15 V2 models
+2026-02-27 12:00:16,363 [INFO] model_engine:   t2: 7 V1 + 15 V2 models
+2026-02-27 12:00:18,015 [INFO] model_engine:   t3: 7 V1 + 15 V2 models
+2026-02-27 12:00:18,015 [INFO] model_engine: Loaded 88 total model components
+2026-02-27 12:00:18,035 [INFO] __main__: Loaded V1 normalization params for t0: 90 features
+2026-02-27 12:00:18,038 [INFO] __main__: Loaded V2 normalization params for t0: 105 features
+2026-02-27 12:00:18,040 [INFO] __main__: Loaded V1 normalization params for t1: 90 features
+2026-02-27 12:00:18,042 [INFO] __main__: Loaded V2 normalization params for t1: 105 features
+2026-02-27 12:00:18,044 [INFO] __main__: Loaded V1 normalization params for t2: 90 features
+2026-02-27 12:00:18,046 [INFO] __main__: Loaded V2 normalization params for t2: 105 features
+2026-02-27 12:00:18,049 [INFO] __main__: Loaded V1 normalization params for t3: 90 features
+2026-02-27 12:00:18,051 [INFO] __main__: Loaded V2 normalization params for t3: 105 features
+2026-02-27 12:00:18,051 [INFO] __main__: Logging in to Betfair...
+2026-02-27 12:00:19,330 [INFO] betfair_client: Logged in to Betfair API
+2026-02-27 12:00:19,330 [INFO] __main__: Setup complete. Entering main loop.
+2026-02-27 12:00:20,303 [INFO] notifier: Email sent: Bot Started - LIVE ($1 bets)
+2026-02-27 12:00:20,705 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-27 12:00:20,705 [INFO] __main__: New market: 1.254532115 (Murray Bridge) 5 runners, starts 01:02:00
+2026-02-27 12:00:20,705 [INFO] __main__: Starting/reconnecting streaming connection...
+2026-02-27 12:00:21,589 [INFO] betfairlightweight.streaming.listener: [None: None]: connection_id: 204-270226010021-404279
+2026-02-27 12:00:21,901 [INFO] betfairlightweight.streaming.listener: [None: 1]: SUCCESS (1 connections available)
+2026-02-27 12:00:22,708 [INFO] __main__: Streaming thread started
+2026-02-27 12:00:22,708 [INFO] betfairlightweight.streaming.listener: [Register: 2]: marketSubscription
+2026-02-27 12:00:22,708 [INFO] betfairlightweight.streaming.stream: [MarketStream: 2]: "MarketStream" created
+2026-02-27 12:00:22,708 [INFO] __main__: Subscribed to 1 new markets (1 total active)
+2026-02-27 12:00:23,011 [INFO] betfairlightweight.streaming.listener: [MarketStream: 2]: SUCCESS (1 connections available)
+2026-02-27 12:00:23,022 [INFO] betfairlightweight.streaming.stream: [MarketStream: 2]: 1.254532115 added, 1 markets in cache
+2026-02-27 12:00:23,023 [INFO] betfairlightweight.streaming.stream: [MarketStream: 2]: 1 mc added
+2026-02-27 12:01:40,306 [INFO] __main__: Decision point for market 1.254532115 (Murray Bridge)
+2026-02-27 12:01:42,109 [INFO] model_engine: Ensemble prediction: 5 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 12:01:42,111 [INFO] paper_trader: Paper bet: 1.254532115.bz2 runner=61408934 edge=0.137 odds=5.20 model_p=0.324
+2026-02-27 12:01:42,112 [INFO] __main__: Placed 1 paper bets on 1.254532115
+2026-02-27 12:02:23,509 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-27 12:02:23,509 [INFO] __main__: New market: 1.254527601 (Healesville) 8 runners, starts 01:17:00
+2026-02-27 12:04:24,018 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:04:24,018 [INFO] __main__: New market: 1.254532118 (Murray Bridge) 5 runners, starts 01:20:00
+2026-02-27 12:06:23,205 [INFO] market_cache: Market 1.254532115: winner = 79491809
+2026-02-27 12:06:23,205 [INFO] paper_trader: Settled: 1.254532115.bz2 runner=61408934 LOSE FILLED pnl=$-1.00
+2026-02-27 12:06:24,285 [INFO] notifier: Email sent: LOSE $-1.00 | Day $-1.00 | Total $-1.00
+2026-02-27 12:06:25,137 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:06:25,137 [INFO] betfairlightweight.streaming.listener: [Register: 3]: Unique id updated on listener and stream
+2026-02-27 12:06:25,137 [INFO] __main__: Subscribed to 1 new markets (2 total active)
+2026-02-27 12:06:25,438 [INFO] betfairlightweight.streaming.listener: [MarketStream: 3]: SUCCESS (1 connections available)
+2026-02-27 12:06:25,438 [INFO] betfairlightweight.streaming.stream: [MarketStream: 3]: 1 mc resubscribed
+2026-02-27 12:08:25,689 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:09:25,440 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 3]: Missing marketDefinition on market 1.254527601 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 12:09:25,440 [INFO] betfairlightweight.streaming.stream: [MarketStream: 3]: 1.254527601 added, 2 markets in cache
+/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/data_logger.py:144: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  df = pd.concat([existing, df], ignore_index=True)
+2026-02-27 12:10:26,216 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:10:26,216 [INFO] betfairlightweight.streaming.listener: [Register: 4]: Unique id updated on listener and stream
+2026-02-27 12:10:26,216 [INFO] __main__: Subscribed to 1 new markets (3 total active)
+2026-02-27 12:10:26,526 [INFO] betfairlightweight.streaming.listener: [MarketStream: 4]: SUCCESS (1 connections available)
+2026-02-27 12:10:26,528 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 4]: Missing marketDefinition on market 1.254532118 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 12:10:26,528 [INFO] betfairlightweight.streaming.stream: [MarketStream: 4]: 1.254532118 added, 3 markets in cache
+2026-02-27 12:10:26,529 [INFO] betfairlightweight.streaming.stream: [MarketStream: 4]: 3 mc resubscribed
+2026-02-27 12:12:27,175 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:14:27,674 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:16:28,080 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 12:16:28,081 [INFO] __main__: New market: 1.254527604 (Healesville) 8 runners, starts 01:32:00
+2026-02-27 12:16:40,096 [INFO] __main__: Decision point for market 1.254527601 (Healesville)
+2026-02-27 12:16:43,023 [INFO] model_engine: Ensemble prediction: 8 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 12:16:43,026 [INFO] __main__: No qualifying bets for 1.254527601
+2026-02-27 12:18:28,526 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:19:26,604 [INFO] market_cache: Market 1.254527601: winner = 68601053
+2026-02-27 12:19:40,123 [INFO] __main__: Decision point for market 1.254532118 (Murray Bridge)
+2026-02-27 12:19:41,945 [INFO] model_engine: Ensemble prediction: 5 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 12:19:41,947 [INFO] __main__: No qualifying bets for 1.254532118
+2026-02-27 12:20:28,948 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:20:28,948 [INFO] __main__: New market: 1.254532121 (Murray Bridge) 6 runners, starts 01:35:00
+2026-02-27 12:22:26,590 [INFO] market_cache: Market 1.254532118: winner = 59147477
+2026-02-27 12:22:29,480 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:22:29,481 [INFO] betfairlightweight.streaming.listener: [Register: 5]: Unique id updated on listener and stream
+2026-02-27 12:22:29,481 [INFO] __main__: Subscribed to 1 new markets (4 total active)
+2026-02-27 12:22:29,782 [INFO] betfairlightweight.streaming.listener: [MarketStream: 5]: SUCCESS (1 connections available)
+2026-02-27 12:22:29,782 [INFO] betfairlightweight.streaming.stream: [MarketStream: 5]: 3 mc resubscribed
+2026-02-27 12:24:31,056 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:24:31,056 [INFO] betfairlightweight.streaming.listener: [Register: 6]: Unique id updated on listener and stream
+2026-02-27 12:24:31,056 [INFO] __main__: Subscribed to 1 new markets (5 total active)
+2026-02-27 12:24:31,356 [INFO] betfairlightweight.streaming.listener: [MarketStream: 6]: SUCCESS (1 connections available)
+2026-02-27 12:24:31,358 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 6]: Missing marketDefinition on market 1.254532121 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 12:24:31,358 [INFO] betfairlightweight.streaming.stream: [MarketStream: 6]: 1.254532121 added, 4 markets in cache
+2026-02-27 12:24:31,359 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 6]: Missing marketDefinition on market 1.254527604 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 12:24:31,359 [INFO] betfairlightweight.streaming.stream: [MarketStream: 6]: 1.254527604 added, 5 markets in cache
+2026-02-27 12:24:31,359 [INFO] betfairlightweight.streaming.stream: [MarketStream: 6]: 5 mc resubscribed
+2026-02-27 12:26:31,600 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 12:26:31,601 [INFO] __main__: New market: 1.254523418 (Goulburn) 7 runners, starts 01:42:00
+2026-02-27 12:28:32,139 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 12:30:38,564 [ERROR] __main__: Market discovery failed: SportsAPING/v1.0/listMarketCatalogue 
+Params: {'filter': {'eventTypeIds': ['4339'], 'marketCountries': ['AU'], 'marketTypeCodes': ['WIN'], 'marketStartTime': {'from': '2026-02-27T01:30:32Z', 'to': '2026-02-27T01:46:32Z'}}, 'marketProjection': ['RUNNER_DESCRIPTION', 'RUNNER_METADATA', 'MARKET_START_TIME', 'EVENT', 'COMPETITION', 'MARKET_DESCRIPTION'], 'sort': 'FIRST_TO_START', 'maxResults': 100} 
+Exception: HTTPSConnectionPool(host='api.betfair.com', port=443): Max retries exceeded with url: /exchange/betting/json-rpc/v1 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45bc490>, 'Connection to api.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 12:31:40,135 [INFO] __main__: Decision point for market 1.254527604 (Healesville)
+2026-02-27 12:31:42,608 [INFO] model_engine: Ensemble prediction: 8 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 12:31:42,610 [INFO] paper_trader: Paper bet: 1.254527604.bz2 runner=67441618 edge=0.050 odds=10.00 model_p=0.146
+2026-02-27 12:31:42,610 [INFO] __main__: Placed 1 paper bets on 1.254527604
+2026-02-27 12:32:39,092 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:32:39,092 [INFO] betfairlightweight.streaming.listener: [Register: 7]: Unique id updated on listener and stream
+2026-02-27 12:32:39,092 [INFO] __main__: Subscribed to 1 new markets (5 total active)
+2026-02-27 12:32:39,394 [INFO] betfairlightweight.streaming.listener: [MarketStream: 7]: SUCCESS (1 connections available)
+2026-02-27 12:32:39,398 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 7]: Missing marketDefinition on market 1.254523418 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 12:32:39,398 [INFO] betfairlightweight.streaming.stream: [MarketStream: 7]: 1.254523418 added, 6 markets in cache
+2026-02-27 12:32:39,399 [INFO] betfairlightweight.streaming.stream: [MarketStream: 7]: 6 mc resubscribed
+2026-02-27 12:34:40,631 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:34:41,132 [INFO] __main__: Decision point for market 1.254532121 (Murray Bridge)
+2026-02-27 12:34:43,845 [INFO] model_engine: Ensemble prediction: 6 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 12:34:43,847 [INFO] __main__: No qualifying bets for 1.254532121
+/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/data_logger.py:144: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  df = pd.concat([existing, df], ignore_index=True)
+2026-02-27 12:36:47,169 [ERROR] __main__: Market discovery failed: SportsAPING/v1.0/listMarketCatalogue 
+Params: {'filter': {'eventTypeIds': ['4339'], 'marketCountries': ['AU'], 'marketTypeCodes': ['WIN'], 'marketStartTime': {'from': '2026-02-27T01:36:41Z', 'to': '2026-02-27T01:52:41Z'}}, 'marketProjection': ['RUNNER_DESCRIPTION', 'RUNNER_METADATA', 'MARKET_START_TIME', 'EVENT', 'COMPETITION', 'MARKET_DESCRIPTION'], 'sort': 'FIRST_TO_START', 'maxResults': 100} 
+Exception: HTTPSConnectionPool(host='api.betfair.com', port=443): Max retries exceeded with url: /exchange/betting/json-rpc/v1 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f3ca0>, 'Connection to api.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 12:38:39,814 [INFO] market_cache: Market 1.254532121: winner = 94978112
+2026-02-27 12:38:39,815 [INFO] market_cache: Market 1.254527604: winner = 79491047
+2026-02-27 12:38:39,815 [INFO] paper_trader: Settled: 1.254527604.bz2 runner=67441618 LOSE FILLED pnl=$-1.00
+2026-02-27 12:39:09,851 [WARNING] notifier: Email send failed: Command '['/home/unimelb.edu.au/adidisheim/claude-email-mcp/venv/bin/python', '-c', '\nimport sys, json\nsys.path.insert(0, \'/home/unimelb.edu.au/adidisheim/claude-email-mcp\')\nfrom gmail_client import GmailClient\ngmail = GmailClient(\n    credentials_file=\'/home/unimelb.edu.au/adidisheim/claude-email-mcp/credentials.json\',\n    token_file=\'/home/unimelb.edu.au/adidisheim/claude-email-mcp/token.json\',\n)\ngmail.send_email(to=\'antoinedidisheim@gmail.com\', subject=\'[AlphaOdds] LOSE $-1.00 | Day $-2.00 | Total $-2.00\', body=\'LOSE - Bet Settled\\n===================================\\nRunner:      67441618\\nEdge:        5.0%\\nOdds:        10.00\\nModel Prob:  14.6%\\nMarket Prob: 9.5%\\nFill Price:  12.00\\nBet P&L:     $-1.00\\n-----------------------------------\\nDaily P&L:   $-2.00\\nTotal P&L:   $-2.00\\nToday:       2 bets, 0W / 2L\\n\')\nprint("ok")\n']' timed out after 30 seconds
+2026-02-27 12:39:16,470 [ERROR] __main__: Market discovery failed: SportsAPING/v1.0/listMarketCatalogue 
+Params: {'filter': {'eventTypeIds': ['4339'], 'marketCountries': ['AU'], 'marketTypeCodes': ['WIN'], 'marketStartTime': {'from': '2026-02-27T01:39:10Z', 'to': '2026-02-27T01:55:10Z'}}, 'marketProjection': ['RUNNER_DESCRIPTION', 'RUNNER_METADATA', 'MARKET_START_TIME', 'EVENT', 'COMPETITION', 'MARKET_DESCRIPTION'], 'sort': 'FIRST_TO_START', 'maxResults': 100} 
+Exception: HTTPSConnectionPool(host='api.betfair.com', port=443): Max retries exceeded with url: /exchange/betting/json-rpc/v1 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f1f00>, 'Connection to api.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 12:41:22,761 [ERROR] __main__: Market discovery failed: SportsAPING/v1.0/listMarketCatalogue 
+Params: {'filter': {'eventTypeIds': ['4339'], 'marketCountries': ['AU'], 'marketTypeCodes': ['WIN'], 'marketStartTime': {'from': '2026-02-27T01:41:16Z', 'to': '2026-02-27T01:57:16Z'}}, 'marketProjection': ['RUNNER_DESCRIPTION', 'RUNNER_METADATA', 'MARKET_START_TIME', 'EVENT', 'COMPETITION', 'MARKET_DESCRIPTION'], 'sort': 'FIRST_TO_START', 'maxResults': 100} 
+Exception: HTTPSConnectionPool(host='api.betfair.com', port=443): Max retries exceeded with url: /exchange/betting/json-rpc/v1 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f3f10>, 'Connection to api.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 12:41:40,285 [INFO] __main__: Decision point for market 1.254523418 (Goulburn)
+2026-02-27 12:41:42,925 [INFO] model_engine: Ensemble prediction: 7 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 12:41:42,927 [INFO] paper_trader: Paper bet: 1.254523418.bz2 runner=4399650 edge=0.058 odds=12.50 model_p=0.126
+2026-02-27 12:41:42,928 [INFO] __main__: Placed 1 paper bets on 1.254523418
+2026-02-27 12:43:26,428 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 12:43:26,429 [INFO] __main__: New market: 1.254530366 (Townsville) 7 runners, starts 01:54:00
+2026-02-27 12:43:26,429 [INFO] __main__: New market: 1.254527607 (Healesville) 8 runners, starts 01:57:00
+2026-02-27 12:43:26,429 [INFO] betfairlightweight.streaming.listener: [Register: 8]: Unique id updated on listener and stream
+2026-02-27 12:43:26,429 [INFO] __main__: Subscribed to 1 new markets (6 total active)
+2026-02-27 12:43:26,730 [INFO] betfairlightweight.streaming.listener: [MarketStream: 8]: SUCCESS (1 connections available)
+2026-02-27 12:43:26,732 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 8]: Missing marketDefinition on market 1.254530366 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 12:43:26,732 [INFO] betfairlightweight.streaming.stream: [MarketStream: 8]: 1.254530366 added, 7 markets in cache
+2026-02-27 12:43:26,733 [INFO] betfairlightweight.streaming.stream: [MarketStream: 8]: 7 mc resubscribed
+2026-02-27 12:43:26,930 [INFO] market_cache: Market 1.254523418: winner = 94487279
+2026-02-27 12:43:26,930 [INFO] paper_trader: Settled: 1.254523418.bz2 runner=4399650 LOSE NO_FILL pnl=$0.00
+2026-02-27 12:45:27,447 [ERROR] __main__: Error in main loop: None 
+Params: None 
+Exception: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f2fe0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 169, in _new_conn
+    conn = connection.create_connection(
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 96, in create_connection
+    raise err
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 86, in create_connection
+    sock.connect(sa)
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 700, in urlopen
+    httplib_response = self._make_request(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 383, in _make_request
+    self._validate_conn(conn)
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 1017, in _validate_conn
+    conn.connect()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 353, in connect
+    conn = self._new_conn()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 174, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPSConnection object at 0x7f0ad45f2fe0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 756, in urlopen
+    retries = retries.increment(
+  File "/usr/lib/python3/dist-packages/urllib3/util/retry.py", line 576, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f2fe0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 42, in request
+    response = session.post(
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 119, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 61, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 544, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 657, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 504, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f2fe0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/main.py", line 272, in run
+    self.client.keep_alive()
+  File "/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/betfair_client.py", line 66, in keep_alive
+    self.api.keep_alive()
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 30, in __call__
+    (response, response_json, elapsed_time) = self.request(session=session)
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 48, in request
+    raise APIError(None, exception=e)
+betfairlightweight.exceptions.APIError: None 
+Params: None 
+Exception: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f2fe0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 12:45:43,779 [ERROR] __main__: Error in main loop: None 
+Params: None 
+Exception: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f21a0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 169, in _new_conn
+    conn = connection.create_connection(
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 96, in create_connection
+    raise err
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 86, in create_connection
+    sock.connect(sa)
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 700, in urlopen
+    httplib_response = self._make_request(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 383, in _make_request
+    self._validate_conn(conn)
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 1017, in _validate_conn
+    conn.connect()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 353, in connect
+    conn = self._new_conn()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 174, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPSConnection object at 0x7f0ad45f21a0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 756, in urlopen
+    retries = retries.increment(
+  File "/usr/lib/python3/dist-packages/urllib3/util/retry.py", line 576, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f21a0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 42, in request
+    response = session.post(
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 119, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 61, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 544, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 657, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 504, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f21a0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/main.py", line 272, in run
+    self.client.keep_alive()
+  File "/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/betfair_client.py", line 66, in keep_alive
+    self.api.keep_alive()
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 30, in __call__
+    (response, response_json, elapsed_time) = self.request(session=session)
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 48, in request
+    raise APIError(None, exception=e)
+betfairlightweight.exceptions.APIError: None 
+Params: None 
+Exception: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f21a0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 12:45:59,899 [ERROR] __main__: Error in main loop: None 
+Params: None 
+Exception: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f0460>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 169, in _new_conn
+    conn = connection.create_connection(
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 96, in create_connection
+    raise err
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 86, in create_connection
+    sock.connect(sa)
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 700, in urlopen
+    httplib_response = self._make_request(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 383, in _make_request
+    self._validate_conn(conn)
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 1017, in _validate_conn
+    conn.connect()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 353, in connect
+    conn = self._new_conn()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 174, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPSConnection object at 0x7f0ad45f0460>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 756, in urlopen
+    retries = retries.increment(
+  File "/usr/lib/python3/dist-packages/urllib3/util/retry.py", line 576, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f0460>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 42, in request
+    response = session.post(
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 119, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 61, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 544, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 657, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 504, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f0460>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/main.py", line 272, in run
+    self.client.keep_alive()
+  File "/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/betfair_client.py", line 66, in keep_alive
+    self.api.keep_alive()
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 30, in __call__
+    (response, response_json, elapsed_time) = self.request(session=session)
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 48, in request
+    raise APIError(None, exception=e)
+betfairlightweight.exceptions.APIError: None 
+Params: None 
+Exception: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f0ad45f0460>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 12:46:16,688 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 12:46:16,688 [INFO] __main__: New market: 1.254532124 (Murray Bridge) 6 runners, starts 02:02:00
+2026-02-27 12:46:16,688 [INFO] betfairlightweight.streaming.listener: [Register: 9]: Unique id updated on listener and stream
+2026-02-27 12:46:16,689 [INFO] __main__: Subscribed to 1 new markets (7 total active)
+/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/data_logger.py:144: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  df = pd.concat([existing, df], ignore_index=True)
+2026-02-27 12:46:16,732 [WARNING] betfairlightweight.streaming.listener: Unwanted data received from uniqueId: 8, expecting: 9
+2026-02-27 12:46:16,988 [INFO] betfairlightweight.streaming.listener: [MarketStream: 9]: SUCCESS (1 connections available)
+2026-02-27 12:46:16,990 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 9]: Missing marketDefinition on market 1.254527607 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 12:46:16,990 [INFO] betfairlightweight.streaming.stream: [MarketStream: 9]: 1.254527607 added, 8 markets in cache
+2026-02-27 12:46:16,991 [INFO] betfairlightweight.streaming.stream: [MarketStream: 9]: 8 mc resubscribed
+2026-02-27 12:48:17,206 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 12:50:17,698 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 12:52:18,331 [INFO] betfair_client: Found 4 upcoming markets (next 16 min)
+2026-02-27 12:52:18,331 [INFO] __main__: New market: 1.254523421 (Goulburn) 6 runners, starts 02:07:00
+2026-02-27 12:52:18,331 [INFO] betfairlightweight.streaming.listener: [Register: 10]: Unique id updated on listener and stream
+2026-02-27 12:52:18,331 [INFO] __main__: Subscribed to 1 new markets (6 total active)
+2026-02-27 12:52:18,632 [INFO] betfairlightweight.streaming.listener: [MarketStream: 10]: SUCCESS (1 connections available)
+2026-02-27 12:52:18,633 [INFO] betfairlightweight.streaming.stream: [MarketStream: 10]: 8 mc resubscribed
+2026-02-27 12:53:40,448 [INFO] __main__: Decision point for market 1.254530366 (Townsville)
+2026-02-27 12:53:42,844 [INFO] model_engine: Ensemble prediction: 7 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 12:53:42,846 [INFO] __main__: No qualifying bets for 1.254530366
+2026-02-27 12:54:19,796 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 12:55:18,635 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 10]: Missing marketDefinition on market 1.254532124 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 12:55:18,635 [INFO] betfairlightweight.streaming.stream: [MarketStream: 10]: 1.254532124 added, 9 markets in cache
+2026-02-27 12:55:18,875 [INFO] market_cache: Market 1.254530366: winner = 95302506
+2026-02-27 12:56:20,331 [INFO] betfair_client: Found 4 upcoming markets (next 16 min)
+2026-02-27 12:56:20,331 [INFO] __main__: New market: 1.254530369 (Townsville) 7 runners, starts 02:11:00
+2026-02-27 12:56:20,331 [INFO] betfairlightweight.streaming.listener: [Register: 11]: Unique id updated on listener and stream
+2026-02-27 12:56:20,331 [INFO] __main__: Subscribed to 1 new markets (7 total active)
+2026-02-27 12:56:20,631 [INFO] betfairlightweight.streaming.listener: [MarketStream: 11]: SUCCESS (1 connections available)
+2026-02-27 12:56:20,634 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 11]: Missing marketDefinition on market 1.254523421 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 12:56:20,634 [INFO] betfairlightweight.streaming.stream: [MarketStream: 11]: 1.254523421 added, 10 markets in cache
+2026-02-27 12:56:20,634 [INFO] betfairlightweight.streaming.stream: [MarketStream: 11]: 10 mc resubscribed
+2026-02-27 12:56:40,359 [INFO] __main__: Decision point for market 1.254527607 (Healesville)
+2026-02-27 12:56:42,325 [INFO] model_engine: Ensemble prediction: 8 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 12:56:42,328 [INFO] __main__: No qualifying bets for 1.254527607
+2026-02-27 12:58:20,799 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:00:24,402 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:00:24,402 [INFO] betfairlightweight.streaming.listener: [Register: 12]: Unique id updated on listener and stream
+2026-02-27 13:00:24,402 [INFO] __main__: Subscribed to 1 new markets (8 total active)
+2026-02-27 13:00:24,704 [INFO] betfairlightweight.streaming.listener: [MarketStream: 12]: SUCCESS (1 connections available)
+2026-02-27 13:00:24,708 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 12]: Missing marketDefinition on market 1.254530369 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 13:00:24,708 [INFO] betfairlightweight.streaming.stream: [MarketStream: 12]: 1.254530369 added, 11 markets in cache
+2026-02-27 13:00:24,709 [INFO] betfairlightweight.streaming.stream: [MarketStream: 12]: 11 mc resubscribed
+2026-02-27 13:00:24,905 [INFO] market_cache: Market 1.254527607: winner = 59383605
+2026-02-27 13:01:40,393 [INFO] __main__: Decision point for market 1.254532124 (Murray Bridge)
+2026-02-27 13:01:42,404 [INFO] model_engine: Ensemble prediction: 6 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 13:01:42,408 [INFO] __main__: No qualifying bets for 1.254532124
+2026-02-27 13:02:24,835 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:02:24,835 [INFO] __main__: New market: 1.254527610 (Healesville) 8 runners, starts 02:18:00
+2026-02-27 13:04:25,398 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:06:25,085 [INFO] market_cache: Market 1.254532124: winner = 89302628
+2026-02-27 13:06:25,979 [INFO] betfair_client: Found 4 upcoming markets (next 16 min)
+2026-02-27 13:06:25,979 [INFO] __main__: New market: 1.254532127 (Murray Bridge) 6 runners, starts 02:22:00
+2026-02-27 13:06:40,498 [INFO] __main__: Decision point for market 1.254523421 (Goulburn)
+2026-02-27 13:06:42,849 [INFO] model_engine: Ensemble prediction: 6 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 13:06:42,855 [INFO] __main__: No qualifying bets for 1.254523421
+2026-02-27 13:08:26,343 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:08:26,343 [INFO] betfairlightweight.streaming.listener: [Register: 13]: Unique id updated on listener and stream
+2026-02-27 13:08:26,343 [INFO] __main__: Subscribed to 1 new markets (7 total active)
+2026-02-27 13:08:26,644 [INFO] betfairlightweight.streaming.listener: [MarketStream: 13]: SUCCESS (1 connections available)
+2026-02-27 13:08:26,647 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 13]: Missing marketDefinition on market 1.254527610 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 13:08:26,647 [INFO] betfairlightweight.streaming.stream: [MarketStream: 13]: 1.254527610 added, 12 markets in cache
+2026-02-27 13:08:26,649 [INFO] betfairlightweight.streaming.stream: [MarketStream: 13]: 12 mc resubscribed
+2026-02-27 13:08:26,845 [INFO] market_cache: Market 1.254523421: winner = 92161432
+2026-02-27 13:10:26,874 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:10:40,392 [INFO] __main__: Decision point for market 1.254530369 (Townsville)
+2026-02-27 13:10:42,201 [INFO] model_engine: Ensemble prediction: 7 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 13:10:42,204 [INFO] __main__: No qualifying bets for 1.254530369
+2026-02-27 13:12:27,227 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 13:12:27,227 [INFO] betfairlightweight.streaming.listener: [Register: 14]: Unique id updated on listener and stream
+2026-02-27 13:12:27,227 [INFO] __main__: Subscribed to 1 new markets (7 total active)
+2026-02-27 13:12:27,527 [INFO] betfairlightweight.streaming.listener: [MarketStream: 14]: SUCCESS (1 connections available)
+2026-02-27 13:12:27,528 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 14]: Missing marketDefinition on market 1.254532127 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 13:12:27,528 [INFO] betfairlightweight.streaming.stream: [MarketStream: 14]: 1.254532127 added, 13 markets in cache
+2026-02-27 13:12:27,530 [INFO] betfairlightweight.streaming.stream: [MarketStream: 14]: 13 mc resubscribed
+2026-02-27 13:12:27,728 [INFO] market_cache: Market 1.254530369: winner = 95581099
+2026-02-27 13:14:27,788 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:14:27,788 [INFO] __main__: New market: 1.254530372 (Townsville) 7 runners, starts 02:29:00
+2026-02-27 13:16:28,589 [INFO] betfair_client: Found 4 upcoming markets (next 16 min)
+2026-02-27 13:16:28,589 [INFO] __main__: New market: 1.254523424 (Goulburn) 6 runners, starts 02:32:00
+2026-02-27 13:17:40,186 [INFO] __main__: Decision point for market 1.254527610 (Healesville)
+2026-02-27 13:17:42,720 [INFO] model_engine: Ensemble prediction: 8 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 13:17:42,723 [INFO] __main__: No qualifying bets for 1.254527610
+2026-02-27 13:18:29,128 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:18:29,128 [INFO] betfairlightweight.streaming.listener: [Register: 15]: Unique id updated on listener and stream
+2026-02-27 13:18:29,128 [INFO] __main__: Subscribed to 1 new markets (8 total active)
+2026-02-27 13:18:29,428 [INFO] betfairlightweight.streaming.listener: [MarketStream: 15]: SUCCESS (1 connections available)
+2026-02-27 13:18:29,430 [INFO] betfairlightweight.streaming.stream: [MarketStream: 15]: 13 mc resubscribed
+2026-02-27 13:20:29,683 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:21:29,433 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 15]: Missing marketDefinition on market 1.254530372 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 13:21:29,433 [INFO] betfairlightweight.streaming.stream: [MarketStream: 15]: 1.254530372 added, 14 markets in cache
+2026-02-27 13:21:29,802 [INFO] market_cache: Market 1.254527610: winner = 84982679
+2026-02-27 13:21:40,316 [INFO] __main__: Decision point for market 1.254532127 (Murray Bridge)
+2026-02-27 13:21:42,492 [INFO] model_engine: Ensemble prediction: 6 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 13:21:42,495 [INFO] __main__: No qualifying bets for 1.254532127
+2026-02-27 13:22:30,492 [INFO] betfair_client: Found 2 upcoming markets (next 16 min)
+2026-02-27 13:22:30,492 [INFO] betfairlightweight.streaming.listener: [Register: 16]: Unique id updated on listener and stream
+2026-02-27 13:22:30,492 [INFO] __main__: Subscribed to 1 new markets (9 total active)
+2026-02-27 13:22:30,802 [INFO] betfairlightweight.streaming.listener: [MarketStream: 16]: SUCCESS (1 connections available)
+2026-02-27 13:22:30,804 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 16]: Missing marketDefinition on market 1.254523424 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 13:22:30,804 [INFO] betfairlightweight.streaming.stream: [MarketStream: 16]: 1.254523424 added, 15 markets in cache
+2026-02-27 13:22:30,805 [INFO] betfairlightweight.streaming.stream: [MarketStream: 16]: 15 mc resubscribed
+2026-02-27 13:24:31,070 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:24:31,070 [INFO] __main__: New market: 1.254532130 (Murray Bridge) 6 runners, starts 02:39:00
+2026-02-27 13:25:31,153 [INFO] market_cache: Market 1.254532127: winner = 77647281
+2026-02-27 13:26:31,616 [INFO] betfair_client: Found 4 upcoming markets (next 16 min)
+2026-02-27 13:26:31,617 [INFO] __main__: New market: 1.254527613 (Healesville) 7 runners, starts 02:42:00
+2026-02-27 13:28:32,181 [INFO] betfair_client: Found 4 upcoming markets (next 16 min)
+2026-02-27 13:28:32,182 [INFO] betfairlightweight.streaming.listener: [Register: 17]: Unique id updated on listener and stream
+2026-02-27 13:28:32,182 [INFO] __main__: Subscribed to 1 new markets (8 total active)
+2026-02-27 13:28:32,485 [INFO] betfairlightweight.streaming.listener: [MarketStream: 17]: SUCCESS (1 connections available)
+2026-02-27 13:28:32,486 [INFO] betfairlightweight.streaming.stream: [MarketStream: 17]: 15 mc resubscribed
+2026-02-27 13:28:40,194 [INFO] __main__: Decision point for market 1.254530372 (Townsville)
+2026-02-27 13:28:42,992 [INFO] model_engine: Ensemble prediction: 7 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 13:28:42,995 [INFO] __main__: No qualifying bets for 1.254530372
+2026-02-27 13:30:32,857 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+Exception in thread BetfairStream:
+Traceback (most recent call last):
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/streaming/betfairstream.py", line 248, in _receive_all
+    part = self._socket.recv(self.buffer_size)
+  File "/usr/lib/python3.10/ssl.py", line 1288, in recv
+    return self.read(buflen)
+  File "/usr/lib/python3.10/ssl.py", line 1161, in read
+    return self._sslobj.read(len)
+TimeoutError: The read operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/streaming/betfairstream.py", line 60, in start
+    self._read_loop()
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/streaming/betfairstream.py", line 230, in _read_loop
+    received_data_raw = self._receive_all()
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/streaming/betfairstream.py", line 252, in _receive_all
+    raise SocketError("[Connect: %s]: Socket %s" % (self._unique_id, e))
+betfairlightweight.exceptions.SocketError: [Connect: 17]: Socket The read operation timed out
+2026-02-27 13:30:56,890 [WARNING] __main__: Stream thread died — will reconnect on next subscription cycle
+2026-02-27 13:31:40,411 [INFO] __main__: Decision point for market 1.254523424 (Goulburn)
+2026-02-27 13:31:43,364 [INFO] model_engine: Ensemble prediction: 6 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 13:31:43,366 [INFO] paper_trader: Paper bet: 1.254523424.bz2 runner=3122910 edge=0.059 odds=16.00 model_p=0.116
+2026-02-27 13:31:43,367 [INFO] __main__: Placed 1 paper bets on 1.254523424
+2026-02-27 13:32:33,309 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:32:33,309 [INFO] __main__: New market: 1.254530375 (Townsville) 8 runners, starts 02:47:00
+2026-02-27 13:32:33,309 [INFO] __main__: Starting/reconnecting streaming connection...
+2026-02-27 13:32:35,190 [INFO] betfairlightweight.streaming.listener: [None: None]: connection_id: 212-270226023235-478869
+2026-02-27 13:32:35,514 [INFO] betfairlightweight.streaming.listener: [None: 1]: SUCCESS (1 connections available)
+2026-02-27 13:32:36,313 [INFO] __main__: Streaming thread started
+2026-02-27 13:32:36,313 [INFO] betfairlightweight.streaming.listener: [Register: 2]: marketSubscription
+2026-02-27 13:32:36,313 [INFO] betfairlightweight.streaming.stream: [MarketStream: 2]: "MarketStream" created
+2026-02-27 13:32:36,314 [INFO] __main__: Subscribed to 4 new markets (4 total active)
+2026-02-27 13:32:36,608 [INFO] betfairlightweight.streaming.listener: [MarketStream: 2]: SUCCESS (1 connections available)
+2026-02-27 13:32:36,621 [INFO] betfairlightweight.streaming.stream: [MarketStream: 2]: 1.254532130 added, 1 markets in cache
+2026-02-27 13:32:36,622 [INFO] betfairlightweight.streaming.stream: [MarketStream: 2]: 1.254530372 added, 2 markets in cache
+2026-02-27 13:32:36,622 [INFO] betfairlightweight.streaming.stream: [MarketStream: 2]: 1.254523424 added, 3 markets in cache
+2026-02-27 13:32:36,623 [INFO] betfairlightweight.streaming.stream: [MarketStream: 2]: 1.254527613 added, 4 markets in cache
+2026-02-27 13:32:36,624 [INFO] betfairlightweight.streaming.stream: [MarketStream: 2]: 4 mc added
+2026-02-27 13:32:36,816 [INFO] market_cache: Market 1.254530372: winner = 94137066
+2026-02-27 13:34:37,139 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:35:36,726 [INFO] market_cache: Market 1.254523424: winner = 91807369
+2026-02-27 13:35:36,726 [INFO] paper_trader: Settled: 1.254523424.bz2 runner=3122910 LOSE FILLED pnl=$-1.00
+2026-02-27 13:35:38,299 [INFO] notifier: Email sent: LOSE $-1.00 | Day $-3.00 | Total $-3.00
+2026-02-27 13:36:37,853 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:36:37,853 [INFO] betfairlightweight.streaming.listener: [Register: 3]: Unique id updated on listener and stream
+2026-02-27 13:36:37,853 [INFO] __main__: Subscribed to 1 new markets (5 total active)
+2026-02-27 13:36:38,148 [INFO] betfairlightweight.streaming.listener: [MarketStream: 3]: SUCCESS (1 connections available)
+2026-02-27 13:36:38,151 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 3]: Missing marketDefinition on market 1.254530375 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 13:36:38,151 [INFO] betfairlightweight.streaming.stream: [MarketStream: 3]: 1.254530375 added, 5 markets in cache
+2026-02-27 13:36:38,152 [INFO] betfairlightweight.streaming.stream: [MarketStream: 3]: 5 mc resubscribed
+2026-02-27 13:38:38,439 [INFO] betfair_client: Found 4 upcoming markets (next 16 min)
+2026-02-27 13:38:38,439 [INFO] __main__: New market: 1.254523427 (Goulburn) 8 runners, starts 02:53:00
+2026-02-27 13:38:40,442 [INFO] __main__: Decision point for market 1.254532130 (Murray Bridge)
+2026-02-27 13:38:42,218 [INFO] model_engine: Ensemble prediction: 6 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 13:38:42,221 [INFO] __main__: No qualifying bets for 1.254532130
+2026-02-27 13:40:39,320 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:41:40,454 [INFO] __main__: Decision point for market 1.254527613 (Healesville)
+2026-02-27 13:41:42,310 [INFO] model_engine: Ensemble prediction: 7 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 13:41:42,313 [INFO] __main__: No qualifying bets for 1.254527613
+2026-02-27 13:42:38,405 [INFO] market_cache: Market 1.254532130: winner = 81522742
+2026-02-27 13:42:39,823 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:42:39,823 [INFO] __main__: New market: 1.254532133 (Murray Bridge) 6 runners, starts 02:57:00
+2026-02-27 13:42:39,823 [INFO] betfairlightweight.streaming.listener: [Register: 4]: Unique id updated on listener and stream
+2026-02-27 13:42:39,823 [INFO] __main__: Subscribed to 1 new markets (6 total active)
+2026-02-27 13:42:40,119 [INFO] betfairlightweight.streaming.listener: [MarketStream: 4]: SUCCESS (1 connections available)
+2026-02-27 13:42:40,120 [INFO] betfairlightweight.streaming.stream: [MarketStream: 4]: 5 mc resubscribed
+2026-02-27 13:44:40,400 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:45:40,125 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 4]: Missing marketDefinition on market 1.254523427 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 13:45:40,126 [INFO] betfairlightweight.streaming.stream: [MarketStream: 4]: 1.254523427 added, 6 markets in cache
+2026-02-27 13:45:40,491 [INFO] market_cache: Market 1.254527613: winner = 91355320
+2026-02-27 13:46:40,086 [INFO] __main__: Decision point for market 1.254530375 (Townsville)
+2026-02-27 13:46:42,080 [INFO] model_engine: Ensemble prediction: 8 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 13:46:42,083 [INFO] __main__: No qualifying bets for 1.254530375
+2026-02-27 13:46:42,996 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:46:42,997 [INFO] betfairlightweight.streaming.listener: [Register: 5]: Unique id updated on listener and stream
+2026-02-27 13:46:42,997 [INFO] __main__: Subscribed to 1 new markets (7 total active)
+2026-02-27 13:46:43,292 [INFO] betfairlightweight.streaming.listener: [MarketStream: 5]: SUCCESS (1 connections available)
+2026-02-27 13:46:43,296 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 5]: Missing marketDefinition on market 1.254532133 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 13:46:43,296 [INFO] betfairlightweight.streaming.stream: [MarketStream: 5]: 1.254532133 added, 7 markets in cache
+2026-02-27 13:46:43,296 [INFO] betfairlightweight.streaming.stream: [MarketStream: 5]: 7 mc resubscribed
+2026-02-27 13:48:43,562 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:48:43,563 [INFO] __main__: New market: 1.254530378 (Townsville) 8 runners, starts 03:04:00
+2026-02-27 13:50:44,285 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:52:40,494 [INFO] __main__: Decision point for market 1.254523427 (Goulburn)
+2026-02-27 13:52:42,383 [INFO] model_engine: Ensemble prediction: 8 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 13:52:42,386 [INFO] paper_trader: Paper bet: 1.254523427.bz2 runner=60653037 edge=0.045 odds=26.00 model_p=0.079
+2026-02-27 13:52:42,386 [INFO] __main__: Placed 1 paper bets on 1.254523427
+2026-02-27 13:52:43,396 [INFO] market_cache: Market 1.254530375: winner = 89967926
+2026-02-27 13:52:44,794 [INFO] betfair_client: Found 4 upcoming markets (next 16 min)
+2026-02-27 13:52:44,795 [INFO] __main__: New market: 1.254527616 (Healesville) 8 runners, starts 03:07:00
+2026-02-27 13:54:45,361 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:54:45,361 [INFO] betfairlightweight.streaming.listener: [Register: 6]: Unique id updated on listener and stream
+2026-02-27 13:54:45,361 [INFO] __main__: Subscribed to 1 new markets (8 total active)
+2026-02-27 13:54:45,657 [INFO] betfairlightweight.streaming.listener: [MarketStream: 6]: SUCCESS (1 connections available)
+2026-02-27 13:54:45,660 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 6]: Missing marketDefinition on market 1.254530378 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 13:54:45,660 [INFO] betfairlightweight.streaming.stream: [MarketStream: 6]: 1.254530378 added, 8 markets in cache
+2026-02-27 13:54:45,662 [INFO] betfairlightweight.streaming.stream: [MarketStream: 6]: 8 mc resubscribed
+2026-02-27 13:54:45,864 [INFO] market_cache: Market 1.254523427: winner = 65757188
+2026-02-27 13:54:45,864 [INFO] paper_trader: Settled: 1.254523427.bz2 runner=60653037 LOSE FILLED pnl=$-1.00
+2026-02-27 13:54:46,866 [INFO] notifier: Email sent: LOSE $-1.00 | Day $-4.00 | Total $-4.00
+2026-02-27 13:56:40,075 [INFO] __main__: Decision point for market 1.254532133 (Murray Bridge)
+2026-02-27 13:56:41,859 [INFO] model_engine: Ensemble prediction: 6 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 13:56:41,861 [INFO] __main__: No qualifying bets for 1.254532133
+2026-02-27 13:56:45,719 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:56:45,719 [INFO] betfairlightweight.streaming.listener: [Register: 7]: Unique id updated on listener and stream
+2026-02-27 13:56:45,719 [INFO] __main__: Subscribed to 1 new markets (9 total active)
+2026-02-27 13:56:46,025 [INFO] betfairlightweight.streaming.listener: [MarketStream: 7]: SUCCESS (1 connections available)
+2026-02-27 13:56:46,029 [INFO] betfairlightweight.streaming.stream: [MarketStream: 7]: 1.254527616 added, 9 markets in cache
+2026-02-27 13:56:46,030 [INFO] betfairlightweight.streaming.stream: [MarketStream: 7]: 9 mc resubscribed
+2026-02-27 13:58:46,285 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 13:58:46,285 [INFO] __main__: New market: 1.254523430 (Goulburn) 8 runners, starts 03:14:00
+2026-02-27 13:59:46,371 [INFO] market_cache: Market 1.254532133: winner = 95541528
+2026-02-27 14:00:46,869 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 14:02:47,339 [INFO] betfair_client: Found 4 upcoming markets (next 16 min)
+2026-02-27 14:02:47,339 [INFO] __main__: New market: 1.254530333 (Warragul) 4 runners, starts 03:17:00
+2026-02-27 14:03:40,418 [INFO] __main__: Decision point for market 1.254530378 (Townsville)
+2026-02-27 14:03:42,281 [INFO] model_engine: Ensemble prediction: 8 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 14:03:42,284 [INFO] __main__: No qualifying bets for 1.254530378
+2026-02-27 14:04:47,724 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 14:04:47,724 [INFO] betfairlightweight.streaming.listener: [Register: 8]: Unique id updated on listener and stream
+2026-02-27 14:04:47,724 [INFO] __main__: Subscribed to 1 new markets (8 total active)
+2026-02-27 14:04:48,022 [INFO] betfairlightweight.streaming.listener: [MarketStream: 8]: SUCCESS (1 connections available)
+2026-02-27 14:04:48,027 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 8]: Missing marketDefinition on market 1.254523430 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 14:04:48,027 [INFO] betfairlightweight.streaming.stream: [MarketStream: 8]: 1.254523430 added, 10 markets in cache
+2026-02-27 14:04:48,028 [INFO] betfairlightweight.streaming.stream: [MarketStream: 8]: 10 mc resubscribed
+2026-02-27 14:06:40,427 [INFO] __main__: Decision point for market 1.254527616 (Healesville)
+2026-02-27 14:06:42,215 [INFO] model_engine: Ensemble prediction: 8 runners, 4 V1 t_defs, 4 V2 t_defs
+2026-02-27 14:06:42,218 [INFO] __main__: No qualifying bets for 1.254527616
+2026-02-27 14:06:48,068 [INFO] betfair_client: Found 4 upcoming markets (next 16 min)
+2026-02-27 14:06:48,068 [INFO] __main__: New market: 1.254532136 (Murray Bridge) 4 runners, starts 03:22:00
+2026-02-27 14:06:48,068 [INFO] betfairlightweight.streaming.listener: [Register: 9]: Unique id updated on listener and stream
+2026-02-27 14:06:48,068 [INFO] __main__: Subscribed to 1 new markets (9 total active)
+2026-02-27 14:06:48,363 [INFO] betfairlightweight.streaming.listener: [MarketStream: 9]: SUCCESS (1 connections available)
+2026-02-27 14:06:48,365 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 9]: Missing marketDefinition on market 1.254530333 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 14:06:48,365 [INFO] betfairlightweight.streaming.stream: [MarketStream: 9]: 1.254530333 added, 11 markets in cache
+2026-02-27 14:06:48,367 [INFO] betfairlightweight.streaming.stream: [MarketStream: 9]: 11 mc resubscribed
+2026-02-27 14:06:48,569 [INFO] market_cache: Market 1.254530378: winner = 87859379
+2026-02-27 14:08:48,860 [INFO] betfair_client: Found 3 upcoming markets (next 16 min)
+2026-02-27 14:09:48,449 [INFO] market_cache: Market 1.254527616: winner = 75718204
+2026-02-27 14:10:49,442 [INFO] betfair_client: Found 4 upcoming markets (next 16 min)
+2026-02-27 14:10:49,442 [INFO] __main__: New market: 1.254530381 (Townsville) 8 runners, starts 03:25:00
+2026-02-27 14:11:22,115 [INFO] __main__: Received signal 15, initiating shutdown...
+2026-02-27 14:11:22,530 [INFO] __main__: Shutting down...
+2026-02-27 14:11:22,530 [INFO] __main__: Streaming stopped
+2026-02-27 14:11:22,531 [INFO] data_logger: Daily summary saved to /home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/paper_trading_logs/daily/2026-02-27.json
+2026-02-27 14:11:22,531 [INFO] signal_tracker: Signal tracker state saved to /home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/paper_trading_logs/signal_tracker/2026-02-27.json
+2026-02-27 14:11:23,557 [INFO] notifier: Email sent: Bot Stopped - Day $-4.00 | Total $-4.00
+2026-02-27 14:11:23,557 [INFO] __main__: Daily summary: {'date': '2026-02-27', 'markets_evaluated': 5, 'bets_placed': 5, 'bets_filled': 4, 'bets_won': 0, 'bets_active': 0, 'win_rate': 0.0, 'fill_rate': 0.8, 'daily_pnl': -4.0, 'total_pnl': -4.0, 'avg_edge': np.float64(0.06998173960999779), 'avg_odds': np.float64(13.940000000000001), 'kill_switch': False, 'roi_pct': -100.0}
+2026-02-27 14:11:23,557 [INFO] __main__: Shutdown complete.

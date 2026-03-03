@@ -1,0 +1,20 @@
+2026-02-26 22:21:31,218 [INFO] __main__: ============================================================
+2026-02-26 22:21:31,219 [INFO] __main__: Paper Trading System Starting
+2026-02-26 22:21:31,219 [INFO] __main__: Dry run: True
+2026-02-26 22:21:31,219 [INFO] __main__: ============================================================
+2026-02-26 22:21:31,219 [INFO] __main__: Loading model artifacts...
+2026-02-26 22:21:31,219 [INFO] model_engine: Loading models from /home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/models
+2026-02-26 22:21:32,834 [INFO] model_engine:   t0: 7 V1 + 15 V2 models
+2026-02-26 22:21:34,265 [INFO] model_engine:   t1: 7 V1 + 15 V2 models
+2026-02-26 22:21:35,751 [INFO] model_engine:   t2: 7 V1 + 15 V2 models
+2026-02-26 22:21:37,312 [INFO] model_engine:   t3: 7 V1 + 15 V2 models
+2026-02-26 22:21:37,312 [INFO] model_engine: Loaded 88 total model components
+2026-02-26 22:21:37,331 [INFO] __main__: Loaded V1 normalization params for t0: 90 features
+2026-02-26 22:21:37,333 [INFO] __main__: Loaded V2 normalization params for t0: 105 features
+2026-02-26 22:21:37,336 [INFO] __main__: Loaded V1 normalization params for t1: 90 features
+2026-02-26 22:21:37,338 [INFO] __main__: Loaded V2 normalization params for t1: 105 features
+2026-02-26 22:21:37,340 [INFO] __main__: Loaded V1 normalization params for t2: 90 features
+2026-02-26 22:21:37,342 [INFO] __main__: Loaded V2 normalization params for t2: 105 features
+2026-02-26 22:21:37,344 [INFO] __main__: Loaded V1 normalization params for t3: 90 features
+2026-02-26 22:21:37,346 [INFO] __main__: Loaded V2 normalization params for t3: 105 features
+2026-02-26 22:21:37,346 [INFO] __main__: Setup complete. Entering main loop.

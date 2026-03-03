@@ -32,6 +32,10 @@ class RunnerBook:
         self.snapshots = []  # (time, best_back, best_lay, best_back_cum_qty, best_lay_cum_qty,
                              #  total_back_qty, total_lay_qty, best_back_q100, best_lay_q100,
                              #  best_back_q1000, best_lay_q1000, prc, qty)
+        # Trade detection state
+        self._last_traded_vol = {}   # price -> cumulative qty (per-price tracking)
+        self._initial_volume_set = False  # First snapshot is baseline, not a trade
+        self._cumulative_trade_qty = 0.0  # Sum of incremental trade quantities
 
     def update_back(self, updates, timestamp):
         """Apply available-to-back updates: list of [price, qty] pairs."""
@@ -104,22 +108,69 @@ class RunnerBook:
             if remaining <= 0:
                 break
 
-        if total_qty < q_value:
+        # Use small epsilon for float comparison — accumulated float arithmetic
+        # can leave total_qty at 99.999999... instead of exactly 100.0
+        if total_qty < q_value - 0.01:
             return np.nan, np.nan
 
         return notional / total_qty, total_qty
 
-    def _record_snapshot(self, timestamp, trade_prc, trade_qty):
-        """Record current order book state as a snapshot."""
-        best_back, best_back_cum_qty = self._get_best_back()
-        best_lay, best_lay_cum_qty = self._get_best_lay()
-        total_back_qty = sum(self.back_book.values())
-        total_lay_qty = sum(self.lay_book.values())
+    def _record_snapshot(self, timestamp, trade_prc, trade_qty,
+                         back_book=None, lay_book=None):
+        """Record order book state as a snapshot.
 
-        best_back_q100, _ = self._get_execution_price(self.back_book, "atb", 100)
-        best_lay_q100, _ = self._get_execution_price(self.lay_book, "atl", 100)
-        best_back_q1000, _ = self._get_execution_price(self.back_book, "atb", 1000)
-        best_lay_q1000, _ = self._get_execution_price(self.lay_book, "atl", 1000)
+        Args:
+            back_book/lay_book: if provided, use these for book features instead
+                of self.back_book/lay_book. This allows trade snapshots to use the
+                PRE-trade book state (matching the historical pipeline where atb
+                updates are processed before trd records).
+        """
+        bb = back_book if back_book is not None else self.back_book
+        lb = lay_book if lay_book is not None else self.lay_book
+
+        # Best prices from the specified book
+        if bb:
+            best_back = max(bb.keys())
+            best_back_cum_qty = bb[best_back]
+        else:
+            best_back = np.nan
+            best_back_cum_qty = 0.0
+
+        if lb:
+            best_lay = min(lb.keys())
+            best_lay_cum_qty = lb[best_lay]
+        else:
+            best_lay = np.nan
+            best_lay_cum_qty = 0.0
+
+        total_back_qty = sum(bb.values())
+        total_lay_qty = sum(lb.values())
+
+        # Freeze the book as a sorted list for reproducible computation
+        lb_frozen = sorted(lb.items()) if lb else []
+        bb_frozen = sorted(bb.items(), reverse=True) if bb else []
+
+        best_back_q100, _ = self._get_execution_price(bb, "atb", 100)
+        best_lay_q100, _ = self._get_execution_price(lb, "atl", 100)
+        best_back_q1000, _ = self._get_execution_price(bb, "atb", 1000)
+        best_lay_q1000, _ = self._get_execution_price(lb, "atl", 1000)
+
+        # Consistency check: if total_lay_qty >= 100, q100 should not be NaN
+        # (uses epsilon for float comparison since _get_execution_price now does too)
+        if total_lay_qty >= 99.99 and (np.isnan(best_lay_q100) or best_lay_q100 == 0):
+            # Recompute directly from the frozen book
+            remaining = 100.0
+            notional = 0.0
+            t_qty = 0.0
+            for price, size in lb_frozen:
+                used = min(size, remaining)
+                notional += used * price
+                t_qty += used
+                remaining -= used
+                if remaining <= 0:
+                    break
+            if t_qty >= 99.99:
+                best_lay_q100 = notional / t_qty
 
         # Handle missing q values: lays→1001, backs→1.0 (matches historical pipeline)
         if np.isnan(best_lay_q100) or best_lay_q100 == 0:
@@ -170,6 +221,9 @@ class MarketCache:
         self.is_settled = False
         self.winner_id = None
         self._decision_made = False
+        self.off_time = None  # When market goes SUSPENDED (race starts)
+        self._last_status = None  # Track status transitions for debugging
+        self._last_inplay = None  # Track in_play transitions
 
     def process_market_change(self, market_book):
         """
@@ -184,16 +238,43 @@ class MarketCache:
             - runner.ex.traded_volume: [{'price': 5.0, 'size': 500.0}, ...]
             - runner.status: 'ACTIVE', 'WINNER', 'LOSER', 'REMOVED'
         """
-        timestamp = datetime.now(timezone.utc)
+        # Use Betfair's publish time for accurate temporal alignment.
+        # The historical pipeline uses the stream's 'pt' field; we must match
+        # that so time_delta and forward-fill produce the same feature values.
+        # datetime.now() is wrong here because streaming updates queue up and
+        # get processed in bursts, collapsing real-world time differences.
+        if hasattr(market_book, "publish_time") and market_book.publish_time is not None:
+            timestamp = market_book.publish_time
+            if timestamp.tzinfo is None:
+                timestamp = timestamp.replace(tzinfo=timezone.utc)
+        else:
+            timestamp = datetime.now(timezone.utc)
 
-        # Handle market definition changes (status, runners)
-        if hasattr(market_book, "market_definition") and market_book.market_definition:
-            md = market_book.market_definition
-            if hasattr(md, "status") and md.status in ("CLOSED", "COMPLETE"):
-                self.is_settled = True
+        # Detect market status from MarketBook (populated from marketDefinition by betfairlightweight)
+        status = getattr(market_book, "status", None)
+        inplay = getattr(market_book, "inplay", None)
 
-        # Check market status directly
-        if hasattr(market_book, "status") and market_book.status in ("CLOSED",):
+        # Log status transitions for debugging
+        if status and status != self._last_status:
+            logger.info(f"Market {self.market_id}: status {self._last_status} -> {status}")
+            self._last_status = status
+        if inplay is not None and inplay != self._last_inplay:
+            logger.info(f"Market {self.market_id}: inplay {self._last_inplay} -> {inplay}")
+            self._last_inplay = inplay
+
+        # Detect off_time: SUSPENDED or in_play transition = race start
+        if self.off_time is None:
+            if status == "SUSPENDED":
+                self.off_time = timestamp
+                logger.info(f"Market {self.market_id}: SUSPENDED (off) at {timestamp}")
+            elif inplay is True:
+                # Fallback: in greyhound races, SUSPENDED can be <50ms and missed
+                # by the 50ms conflation window. inplay=True is a reliable indicator.
+                self.off_time = timestamp
+                logger.info(f"Market {self.market_id}: IN_PLAY (off fallback) at {timestamp}")
+
+        # Detect settlement
+        if status in ("CLOSED", "COMPLETE"):
             self.is_settled = True
 
         # Process runner updates
@@ -215,6 +296,15 @@ class MarketCache:
                 if hasattr(rc, "ex") and rc.ex:
                     ex = rc.ex
 
+                    # Save PRE-update book state for trade snapshots.
+                    # betfairlightweight's available_to_back is the POST-trade state
+                    # (liquidity already consumed). The historical pipeline processes
+                    # atb updates (which add liquidity) BEFORE recording trades, so
+                    # trade rows see pre-depletion book state. Using the previous
+                    # book for trade snapshots matches this behavior.
+                    pre_back = runner_book.back_book.copy()
+                    pre_lay = runner_book.lay_book.copy()
+
                     # Rebuild back book from available_to_back
                     if ex.available_to_back:
                         runner_book.back_book.clear()
@@ -234,27 +324,49 @@ class MarketCache:
                                 runner_book.lay_book[price] = size
 
                     # Process traded volume — detect new trades
-                    trade_prc = np.nan
-                    trade_qty = 0.0
+                    # Create one snapshot per price-level delta (matches historical
+                    # pipeline which creates one row per [prc,qty] pair)
+                    had_trade_snapshot = False
                     if ex.traded_volume:
-                        # Compute total traded to detect incremental trades
-                        new_total = sum(tv["size"] for tv in ex.traded_volume)
-                        old_total = sum(
-                            qty for _, _, qty in runner_book.trades
-                        ) if runner_book.trades else 0.0
-                        if new_total > old_total + 0.01:
-                            # New trade detected — use last traded price
-                            if hasattr(rc, "last_price_traded") and rc.last_price_traded:
-                                trade_prc = rc.last_price_traded
-                                trade_qty = new_total - old_total
+                        new_vol = {tv["price"]: tv["size"] for tv in ex.traded_volume}
+
+                        if not runner_book._initial_volume_set:
+                            # First volume snapshot: set baseline, don't record as trade.
+                            runner_book._last_traded_vol = new_vol.copy()
+                            runner_book._initial_volume_set = True
+                        else:
+                            old_vol = runner_book._last_traded_vol
+                            # Collect per-price deltas
+                            price_deltas = []
+                            for price, qty in new_vol.items():
+                                prev = old_vol.get(price, 0.0)
+                                if qty > prev + 0.001:
+                                    price_deltas.append((price, qty - prev))
+
+                            # Record one snapshot per price-level delta,
+                            # using PRE-update book for book features
+                            for trade_prc, trade_qty in price_deltas:
                                 runner_book.trades.append(
                                     (timestamp, trade_prc, trade_qty)
                                 )
+                                runner_book._cumulative_trade_qty += trade_qty
+                                runner_book._record_snapshot(
+                                    timestamp,
+                                    trade_prc=trade_prc,
+                                    trade_qty=trade_qty,
+                                    back_book=pre_back,
+                                    lay_book=pre_lay,
+                                )
+                                had_trade_snapshot = True
 
-                    # Record snapshot
-                    runner_book._record_snapshot(
-                        timestamp, trade_prc=trade_prc, trade_qty=trade_qty
-                    )
+                            runner_book._last_traded_vol = new_vol.copy()
+
+                    # If no trade snapshots were recorded this message,
+                    # record a book-only snapshot using CURRENT (post-update) book
+                    if not had_trade_snapshot:
+                        runner_book._record_snapshot(
+                            timestamp, trade_prc=np.nan, trade_qty=0.0
+                        )
 
     def to_dataframe(self):
         """
@@ -301,6 +413,86 @@ class MarketCache:
     def get_runner_position_map(self):
         """Return {runner_id: position} from the original runner list order."""
         return {rid: i + 1 for i, rid in enumerate(self.runner_ids)}
+
+    def get_trade_diagnostics(self):
+        """Return per-runner trade diagnostics for debugging.
+
+        Returns dict with:
+            runners: list of {runner_id, n_snapshots, n_trades, cumulative_qty,
+                              initial_vol_set, price_levels_tracked}
+            summary: {total_runners, runners_with_trades, avg_trades_per_runner}
+        """
+        diag = []
+        for rid, runner in self.runners.items():
+            diag.append({
+                "runner_id": rid,
+                "n_snapshots": len(runner.snapshots),
+                "n_trades": len(runner.trades),
+                "cumulative_qty": runner._cumulative_trade_qty,
+                "initial_vol_set": runner._initial_volume_set,
+                "price_levels_tracked": len(runner._last_traded_vol),
+            })
+        runners_with_trades = sum(1 for d in diag if d["n_trades"] > 0)
+        avg_trades = (
+            sum(d["n_trades"] for d in diag) / len(diag) if diag else 0
+        )
+        return {
+            "runners": diag,
+            "summary": {
+                "total_runners": len(diag),
+                "runners_with_trades": runners_with_trades,
+                "avg_trades_per_runner": round(avg_trades, 1),
+            },
+        }
+
+    def get_book_depth_diagnostics(self):
+        """Return per-runner book depth stats to verify full depth after removing ladder_levels cap.
+
+        Returns dict with:
+            runners: list of {runner_id, back_levels, lay_levels, total_back_qty, total_lay_qty}
+            summary: {avg_back_levels, avg_lay_levels, max_back_levels, max_lay_levels}
+        """
+        diag = []
+        for rid, runner in self.runners.items():
+            diag.append({
+                "runner_id": rid,
+                "back_levels": len(runner.back_book),
+                "lay_levels": len(runner.lay_book),
+                "total_back_qty": sum(runner.back_book.values()),
+                "total_lay_qty": sum(runner.lay_book.values()),
+            })
+        if not diag:
+            return {"runners": [], "summary": {}}
+        avg_back = sum(d["back_levels"] for d in diag) / len(diag)
+        avg_lay = sum(d["lay_levels"] for d in diag) / len(diag)
+        max_back = max(d["back_levels"] for d in diag)
+        max_lay = max(d["lay_levels"] for d in diag)
+        return {
+            "runners": diag,
+            "summary": {
+                "avg_back_levels": round(avg_back, 1),
+                "avg_lay_levels": round(avg_lay, 1),
+                "max_back_levels": max_back,
+                "max_lay_levels": max_lay,
+            },
+        }
+
+    def force_snapshot_all(self, timestamp):
+        """
+        Record the current book state for all runners at the given timestamp.
+
+        The streaming API only delivers MCMs when book state changes. For thin
+        markets with few orders, updates can be minutes apart. This creates
+        sparse tick data that causes stale forward-fills when computing features.
+
+        The historical pipeline processes raw BZ2 data which records every single
+        delta (often hundreds per runner per 10 minutes). By forcing periodic
+        snapshots (e.g., every 5 seconds), we match the historical pipeline's
+        density and ensure forward-fill picks up recent book states.
+        """
+        for rid, runner in self.runners.items():
+            if runner.back_book or runner.lay_book:
+                runner._record_snapshot(timestamp, trade_prc=np.nan, trade_qty=0.0)
 
     @property
     def decision_made(self):

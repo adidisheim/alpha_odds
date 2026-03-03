@@ -1,0 +1,646 @@
+2026-02-26 23:29:51,480 [INFO] notifier: Email notifications enabled via claude-email-mcp Gmail API
+2026-02-26 23:29:51,480 [INFO] __main__: ============================================================
+2026-02-26 23:29:51,480 [INFO] __main__: Paper Trading System Starting
+2026-02-26 23:29:51,480 [INFO] __main__: Dry run: False
+2026-02-26 23:29:51,480 [INFO] __main__: ============================================================
+2026-02-26 23:29:51,480 [INFO] __main__: Loading model artifacts...
+2026-02-26 23:29:51,480 [INFO] model_engine: Loading models from /home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/models
+2026-02-26 23:29:53,178 [INFO] model_engine:   t0: 7 V1 + 15 V2 models
+2026-02-26 23:29:54,609 [INFO] model_engine:   t1: 7 V1 + 15 V2 models
+2026-02-26 23:29:56,279 [INFO] model_engine:   t2: 7 V1 + 15 V2 models
+2026-02-26 23:29:57,788 [INFO] model_engine:   t3: 7 V1 + 15 V2 models
+2026-02-26 23:29:57,788 [INFO] model_engine: Loaded 88 total model components
+2026-02-26 23:29:57,808 [INFO] __main__: Loaded V1 normalization params for t0: 90 features
+2026-02-26 23:29:57,810 [INFO] __main__: Loaded V2 normalization params for t0: 105 features
+2026-02-26 23:29:57,812 [INFO] __main__: Loaded V1 normalization params for t1: 90 features
+2026-02-26 23:29:57,814 [INFO] __main__: Loaded V2 normalization params for t1: 105 features
+2026-02-26 23:29:57,817 [INFO] __main__: Loaded V1 normalization params for t2: 90 features
+2026-02-26 23:29:57,819 [INFO] __main__: Loaded V2 normalization params for t2: 105 features
+2026-02-26 23:29:57,821 [INFO] __main__: Loaded V1 normalization params for t3: 90 features
+2026-02-26 23:29:57,823 [INFO] __main__: Loaded V2 normalization params for t3: 105 features
+2026-02-26 23:29:57,823 [INFO] __main__: Logging in to Betfair...
+2026-02-26 23:29:59,254 [INFO] betfair_client: Logged in to Betfair API
+2026-02-26 23:29:59,255 [INFO] __main__: Streaming thread started
+2026-02-26 23:29:59,255 [INFO] __main__: Setup complete. Entering main loop.
+2026-02-26 23:30:00,157 [INFO] betfairlightweight.streaming.listener: [None: None]: connection_id: 201-260226123000-83628
+2026-02-26 23:30:00,204 [INFO] notifier: Email sent: Bot Started - LIVE ($1 bets)
+2026-02-26 23:30:00,481 [INFO] betfairlightweight.streaming.listener: [None: 1]: SUCCESS (1 connections available)
+2026-02-26 23:30:00,646 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:30:00,646 [INFO] __main__: New market: 1.254496595 (Mandurah) 8 runners, starts 12:40:00
+2026-02-26 23:30:00,647 [INFO] betfairlightweight.streaming.listener: [Register: 2]: marketSubscription
+2026-02-26 23:30:00,647 [INFO] betfairlightweight.streaming.stream: [MarketStream: 2]: "MarketStream" created
+2026-02-26 23:30:00,647 [INFO] __main__: Subscribed to 1 new markets (1 total active)
+2026-02-26 23:30:00,949 [INFO] betfairlightweight.streaming.listener: [MarketStream: 2]: SUCCESS (1 connections available)
+2026-02-26 23:30:00,959 [INFO] betfairlightweight.streaming.stream: [MarketStream: 2]: 1.254496595 added, 1 markets in cache
+2026-02-26 23:30:00,960 [INFO] betfairlightweight.streaming.stream: [MarketStream: 2]: 1 mc added
+2026-02-26 23:32:01,213 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:34:01,761 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:36:02,316 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:38:02,862 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:39:40,489 [INFO] __main__: Decision point for market 1.254496595 (Mandurah)
+2026-02-26 23:39:41,419 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,423 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,426 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,429 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.01 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,433 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,436 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,439 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,443 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,446 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,449 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,452 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.01 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,456 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.01 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,459 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.01 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,462 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,466 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,472 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,475 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,478 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,482 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.01 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,485 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,488 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,492 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,495 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,498 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,502 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,505 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.01 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,508 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.01 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,512 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.01 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,515 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,518 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,524 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,528 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,531 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,534 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.01 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,537 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.01 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,541 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.01 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,544 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,547 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,551 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,554 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,557 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,561 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,564 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,567 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,571 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,577 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,580 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,583 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,587 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.01 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,590 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.01 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,593 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,597 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,600 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,603 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,607 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,610 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,613 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.01 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,616 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.01 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,620 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,623 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:39:41,624 [INFO] model_engine: Ensemble prediction: 8 runners, 4 V1 t_defs, 0 V2 t_defs
+2026-02-26 23:39:41,626 [INFO] __main__: No qualifying bets for 1.254496595
+2026-02-26 23:40:03,579 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-26 23:42:04,116 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-26 23:44:04,665 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:44:04,665 [INFO] __main__: New market: 1.254496600 (Mandurah) 8 runners, starts 13:00:00
+2026-02-26 23:45:01,404 [INFO] market_cache: Market 1.254496595: winner = 50088862
+2026-02-26 23:46:05,382 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:48:05,936 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:50:06,481 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:50:06,482 [INFO] betfairlightweight.streaming.listener: [Register: 3]: Unique id updated on listener and stream
+2026-02-26 23:50:06,482 [INFO] __main__: Subscribed to 1 new markets (2 total active)
+2026-02-26 23:50:06,782 [INFO] betfairlightweight.streaming.listener: [MarketStream: 3]: SUCCESS (1 connections available)
+2026-02-26 23:50:06,782 [INFO] betfairlightweight.streaming.stream: [MarketStream: 3]: 1 mc resubscribed
+2026-02-26 23:52:07,036 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:53:06,783 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 3]: Missing marketDefinition on market 1.254496600 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-26 23:53:06,783 [INFO] betfairlightweight.streaming.stream: [MarketStream: 3]: 1.254496600 added, 2 markets in cache
+2026-02-26 23:54:07,603 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:56:08,165 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:58:08,709 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-26 23:59:40,327 [INFO] __main__: Decision point for market 1.254496600 (Mandurah)
+2026-02-26 23:59:41,274 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,278 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,281 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,285 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.01 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,288 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,291 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,294 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,298 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,301 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,304 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,308 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.01 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,311 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.01 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,314 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.01 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,318 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,321 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,328 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,331 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,334 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,337 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.01 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,341 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,344 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,347 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,351 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,354 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,358 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,361 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.01 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,365 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.01 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,368 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.01 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,372 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,375 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,381 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,385 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,389 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,392 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.01 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,396 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.01 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,399 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.01 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,402 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,406 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,409 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,412 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,416 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,419 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,422 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,426 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,429 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,435 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,439 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,442 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,445 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.01 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,449 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.01 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,452 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,456 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,459 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,463 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,466 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,469 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,473 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.01 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,476 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.01 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,479 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,483 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-26 23:59:41,484 [INFO] model_engine: Ensemble prediction: 8 runners, 4 V1 t_defs, 0 V2 t_defs
+2026-02-26 23:59:41,486 [INFO] __main__: No qualifying bets for 1.254496600
+2026-02-27 00:00:09,334 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:02:06,982 [INFO] market_cache: Market 1.254496600: winner = 89887751
+2026-02-27 00:02:09,901 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-27 00:02:09,901 [INFO] __main__: New market: 1.254496605 (Mandurah) 6 runners, starts 13:18:00
+2026-02-27 00:04:10,450 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-27 00:06:11,001 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-27 00:08:11,554 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-27 00:08:11,554 [INFO] betfairlightweight.streaming.listener: [Register: 4]: Unique id updated on listener and stream
+2026-02-27 00:08:11,554 [INFO] __main__: Subscribed to 1 new markets (3 total active)
+2026-02-27 00:08:11,792 [WARNING] betfairlightweight.streaming.listener: Unwanted data received from uniqueId: 3, expecting: 4
+2026-02-27 00:08:11,855 [INFO] betfairlightweight.streaming.listener: [MarketStream: 4]: SUCCESS (1 connections available)
+2026-02-27 00:08:11,855 [WARNING] betfairlightweight.streaming.stream: [MarketStream: 4]: Missing marketDefinition on market 1.254496605 resulting in potential missing data in the MarketBook (make sure EX_MARKET_DEF is requested)
+2026-02-27 00:08:11,855 [INFO] betfairlightweight.streaming.stream: [MarketStream: 4]: 1.254496605 added, 3 markets in cache
+2026-02-27 00:08:11,855 [INFO] betfairlightweight.streaming.stream: [MarketStream: 4]: 3 mc resubscribed
+2026-02-27 00:10:12,114 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-27 00:12:12,692 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-27 00:14:13,238 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-27 00:16:13,659 [INFO] betfair_client: Found 1 upcoming markets (next 16 min)
+2026-02-27 00:17:40,271 [INFO] __main__: Decision point for market 1.254496605 (Mandurah)
+2026-02-27 00:17:41,169 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,173 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,176 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,179 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.01 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,183 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,186 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,189 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,193 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,196 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,199 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.1 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,202 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.01 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,206 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.01 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,209 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.01 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,212 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,216 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.05 t0: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,222 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,225 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,229 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,232 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.01 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,235 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,239 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,242 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,245 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,248 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,252 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.05 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,255 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.01 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,258 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.01 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,262 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.01 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,265 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,268 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.1 t1: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,274 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,278 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,281 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,284 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.01 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,288 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.01 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,291 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.01 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,294 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,298 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,301 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.05 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,304 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,308 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,311 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,314 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,317 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,321 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.1 t2: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,327 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,330 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,334 [WARNING] model_engine: V2 prediction failed for ne500_md6_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,337 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.01 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,340 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.01 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,344 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,347 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,350 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,354 [WARNING] model_engine: V2 prediction failed for ne500_md4_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,357 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,360 [WARNING] model_engine: V2 prediction failed for ne2000_md4_lr0.05 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,363 [WARNING] model_engine: V2 prediction failed for ne1000_md4_lr0.01 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,367 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.01 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,370 [WARNING] model_engine: V2 prediction failed for ne1000_md6_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,373 [WARNING] model_engine: V2 prediction failed for ne2000_md6_lr0.1 t3: 'DataFrame' object has no attribute 'dtype'
+2026-02-27 00:17:41,374 [INFO] model_engine: Ensemble prediction: 6 runners, 4 V1 t_defs, 0 V2 t_defs
+2026-02-27 00:17:41,376 [INFO] __main__: No qualifying bets for 1.254496605
+2026-02-27 00:18:14,316 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:20:12,009 [INFO] market_cache: Market 1.254496605: winner = 73527954
+2026-02-27 00:20:14,894 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:22:15,458 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:24:16,008 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:26:16,557 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:28:17,104 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:30:17,650 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:32:18,186 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:34:18,725 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:36:19,275 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:38:19,818 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:40:20,365 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:42:20,908 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:44:21,428 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:46:22,313 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:48:22,835 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:50:23,356 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:52:23,885 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:54:24,418 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:56:24,949 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 00:58:25,479 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:00:25,897 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:02:26,424 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:04:26,953 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:06:27,483 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:08:28,020 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:10:28,569 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:12:29,098 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:14:29,618 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:16:30,187 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:18:30,713 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:20:31,233 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:22:31,750 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:24:32,285 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:26:32,820 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:28:33,359 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:30:33,820 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:32:34,627 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:34:35,171 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:36:35,707 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:38:36,238 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:40:36,761 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:42:40,335 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:44:40,862 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:45:13,512 [ERROR] __main__: Error in main loop: None 
+Params: None 
+Exception: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a475c90>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 169, in _new_conn
+    conn = connection.create_connection(
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 96, in create_connection
+    raise err
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 86, in create_connection
+    sock.connect(sa)
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 700, in urlopen
+    httplib_response = self._make_request(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 383, in _make_request
+    self._validate_conn(conn)
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 1017, in _validate_conn
+    conn.connect()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 353, in connect
+    conn = self._new_conn()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 174, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPSConnection object at 0x7fa65a475c90>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 756, in urlopen
+    retries = retries.increment(
+  File "/usr/lib/python3/dist-packages/urllib3/util/retry.py", line 576, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a475c90>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 42, in request
+    response = session.post(
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 119, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 61, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 544, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 657, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 504, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a475c90>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/main.py", line 256, in run
+    self.client.keep_alive()
+  File "/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/betfair_client.py", line 66, in keep_alive
+    self.api.keep_alive()
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 30, in __call__
+    (response, response_json, elapsed_time) = self.request(session=session)
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 48, in request
+    raise APIError(None, exception=e)
+betfairlightweight.exceptions.APIError: None 
+Params: None 
+Exception: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a475c90>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 01:46:41,534 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:48:42,249 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:50:42,778 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:52:43,310 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:54:43,849 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:56:44,330 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 01:58:44,862 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:00:45,316 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:02:45,876 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:04:49,730 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:06:50,210 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:08:53,805 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:10:54,347 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:12:57,934 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:15:04,209 [ERROR] __main__: Market discovery failed: SportsAPING/v1.0/listMarketCatalogue 
+Params: {'filter': {'eventTypeIds': ['4339'], 'marketCountries': ['AU'], 'marketTypeCodes': ['WIN'], 'marketStartTime': {'from': '2026-02-26T15:14:58Z', 'to': '2026-02-26T15:30:58Z'}}, 'marketProjection': ['RUNNER_DESCRIPTION', 'RUNNER_METADATA', 'MARKET_START_TIME', 'EVENT', 'COMPETITION', 'MARKET_DESCRIPTION'], 'sort': 'FIRST_TO_START', 'maxResults': 100} 
+Exception: HTTPSConnectionPool(host='api.betfair.com', port=443): Max retries exceeded with url: /exchange/betting/json-rpc/v1 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a4751b0>, 'Connection to api.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 02:15:37,371 [ERROR] __main__: Error in main loop: None 
+Params: None 
+Exception: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a475ae0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 169, in _new_conn
+    conn = connection.create_connection(
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 96, in create_connection
+    raise err
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 86, in create_connection
+    sock.connect(sa)
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 700, in urlopen
+    httplib_response = self._make_request(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 383, in _make_request
+    self._validate_conn(conn)
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 1017, in _validate_conn
+    conn.connect()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 353, in connect
+    conn = self._new_conn()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 174, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPSConnection object at 0x7fa65a475ae0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 756, in urlopen
+    retries = retries.increment(
+  File "/usr/lib/python3/dist-packages/urllib3/util/retry.py", line 576, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a475ae0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 42, in request
+    response = session.post(
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 119, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 61, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 544, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 657, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 504, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a475ae0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/main.py", line 256, in run
+    self.client.keep_alive()
+  File "/home/unimelb.edu.au/adidisheim/Dropbox/side_project/alpha_odds/_05_paper_trading/betfair_client.py", line 66, in keep_alive
+    self.api.keep_alive()
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 30, in __call__
+    (response, response_json, elapsed_time) = self.request(session=session)
+  File "/home/unimelb.edu.au/adidisheim/.local/lib/python3.10/site-packages/betfairlightweight/endpoints/keepalive.py", line 48, in request
+    raise APIError(None, exception=e)
+betfairlightweight.exceptions.APIError: None 
+Params: None 
+Exception: HTTPSConnectionPool(host='identitysso.betfair.com', port=443): Max retries exceeded with url: /api/keepAlive (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a475ae0>, 'Connection to identitysso.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 02:17:04,747 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:19:05,278 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:21:06,085 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:23:06,561 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:25:07,038 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:27:07,510 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:29:08,082 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:31:08,557 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:33:09,091 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:35:09,633 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:37:10,659 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:39:11,191 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:41:11,725 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:43:12,263 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:45:12,792 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:47:13,218 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:49:13,755 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:51:14,291 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:53:15,076 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:55:15,552 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:57:16,035 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 02:59:16,573 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:01:17,079 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:03:17,622 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:05:18,172 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:07:18,640 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:09:19,659 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:11:20,200 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:13:20,737 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:15:21,273 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:17:21,704 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:19:22,233 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:21:22,767 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:23:23,304 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:25:24,301 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:27:24,843 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:29:25,395 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:31:25,844 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:33:26,377 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:35:26,909 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:37:27,447 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:39:27,931 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:41:28,734 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:43:29,277 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:45:29,810 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:47:30,234 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:49:30,767 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:51:31,249 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:53:31,727 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:55:32,256 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:57:33,240 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 03:59:33,778 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:01:34,206 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:03:34,742 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:05:35,283 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:07:35,923 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:09:36,411 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:11:36,963 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:13:37,754 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:15:38,295 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:17:38,728 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:19:39,261 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:21:39,792 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:23:40,321 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:25:40,849 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:27:41,386 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:29:41,917 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:31:42,624 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:33:43,168 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:35:43,704 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:37:44,199 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:39:44,744 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:41:45,236 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:43:45,767 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:45:46,304 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:47:46,956 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:49:47,437 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:51:47,934 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:53:48,416 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:55:48,899 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:57:49,425 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 04:59:49,946 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:01:50,375 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:03:50,905 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:05:51,456 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:07:51,994 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:09:52,527 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:11:53,051 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:13:53,584 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:15:54,119 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:17:54,802 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:19:55,294 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:21:55,824 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:23:56,350 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:25:56,884 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:27:57,416 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:29:57,944 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:31:58,568 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:33:59,104 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:35:59,633 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:38:00,125 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:40:00,662 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:42:01,190 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:44:01,697 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:46:02,386 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:48:02,910 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:50:03,444 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:52:03,911 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:54:04,426 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:56:04,895 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 05:58:05,369 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:00:05,885 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:02:06,688 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:04:07,166 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:06:07,691 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:08:08,164 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:10:08,637 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:12:09,171 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:14:09,641 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:16:10,275 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:18:10,754 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:20:11,290 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:22:11,827 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:24:15,411 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:26:19,005 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:28:25,567 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:30:26,097 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:32:26,523 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:34:32,775 [ERROR] __main__: Market discovery failed: SportsAPING/v1.0/listMarketCatalogue 
+Params: {'filter': {'eventTypeIds': ['4339'], 'marketCountries': ['AU'], 'marketTypeCodes': ['WIN'], 'marketStartTime': {'from': '2026-02-26T19:34:26Z', 'to': '2026-02-26T19:50:26Z'}}, 'marketProjection': ['RUNNER_DESCRIPTION', 'RUNNER_METADATA', 'MARKET_START_TIME', 'EVENT', 'COMPETITION', 'MARKET_DESCRIPTION'], 'sort': 'FIRST_TO_START', 'maxResults': 100} 
+Exception: HTTPSConnectionPool(host='api.betfair.com', port=443): Max retries exceeded with url: /exchange/betting/json-rpc/v1 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a476290>, 'Connection to api.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 06:36:39,032 [ERROR] __main__: Market discovery failed: SportsAPING/v1.0/listMarketCatalogue 
+Params: {'filter': {'eventTypeIds': ['4339'], 'marketCountries': ['AU'], 'marketTypeCodes': ['WIN'], 'marketStartTime': {'from': '2026-02-26T19:36:32Z', 'to': '2026-02-26T19:52:32Z'}}, 'marketProjection': ['RUNNER_DESCRIPTION', 'RUNNER_METADATA', 'MARKET_START_TIME', 'EVENT', 'COMPETITION', 'MARKET_DESCRIPTION'], 'sort': 'FIRST_TO_START', 'maxResults': 100} 
+Exception: HTTPSConnectionPool(host='api.betfair.com', port=443): Max retries exceeded with url: /exchange/betting/json-rpc/v1 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a477850>, 'Connection to api.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 06:38:42,526 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:40:43,048 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:42:49,311 [ERROR] __main__: Market discovery failed: SportsAPING/v1.0/listMarketCatalogue 
+Params: {'filter': {'eventTypeIds': ['4339'], 'marketCountries': ['AU'], 'marketTypeCodes': ['WIN'], 'marketStartTime': {'from': '2026-02-26T19:42:43Z', 'to': '2026-02-26T19:58:43Z'}}, 'marketProjection': ['RUNNER_DESCRIPTION', 'RUNNER_METADATA', 'MARKET_START_TIME', 'EVENT', 'COMPETITION', 'MARKET_DESCRIPTION'], 'sort': 'FIRST_TO_START', 'maxResults': 100} 
+Exception: HTTPSConnectionPool(host='api.betfair.com', port=443): Max retries exceeded with url: /exchange/betting/json-rpc/v1 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a468a30>, 'Connection to api.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 06:44:49,785 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:46:50,206 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:48:50,690 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:50:56,953 [ERROR] __main__: Market discovery failed: SportsAPING/v1.0/listMarketCatalogue 
+Params: {'filter': {'eventTypeIds': ['4339'], 'marketCountries': ['AU'], 'marketTypeCodes': ['WIN'], 'marketStartTime': {'from': '2026-02-26T19:50:50Z', 'to': '2026-02-26T20:06:50Z'}}, 'marketProjection': ['RUNNER_DESCRIPTION', 'RUNNER_METADATA', 'MARKET_START_TIME', 'EVENT', 'COMPETITION', 'MARKET_DESCRIPTION'], 'sort': 'FIRST_TO_START', 'maxResults': 100} 
+Exception: HTTPSConnectionPool(host='api.betfair.com', port=443): Max retries exceeded with url: /exchange/betting/json-rpc/v1 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fa65a474820>, 'Connection to api.betfair.com timed out. (connect timeout=3.05)'))
+2026-02-27 06:52:57,490 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:54:58,028 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:56:58,551 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 06:58:59,098 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:00:59,640 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:03:00,066 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:05:00,542 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:07:01,082 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:09:01,565 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:11:02,047 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:13:02,603 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:15:03,143 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:17:03,584 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:19:04,065 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:21:04,527 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:23:05,047 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:25:05,667 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:27:06,207 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:29:06,741 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:31:07,270 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:33:07,704 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:35:08,233 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:37:08,705 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:39:09,171 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:41:09,691 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:43:10,234 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:45:10,767 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:47:11,461 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:49:11,985 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:51:12,466 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:53:13,001 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:55:13,535 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:57:14,068 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 07:59:14,583 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 08:01:14,916 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 08:03:15,444 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)
+2026-02-27 08:05:15,964 [INFO] betfair_client: Found 0 upcoming markets (next 16 min)

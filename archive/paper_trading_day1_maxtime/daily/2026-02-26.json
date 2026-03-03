@@ -1,0 +1,16 @@
+{
+  "date": "2026-02-26",
+  "markets_evaluated": 0,
+  "bets_placed": 0,
+  "bets_filled": 0,
+  "bets_won": 0,
+  "bets_active": 0,
+  "win_rate": 0,
+  "fill_rate": 0,
+  "daily_pnl": 0.0,
+  "total_pnl": 0.0,
+  "avg_edge": 0,
+  "avg_odds": 0,
+  "kill_switch": false,
+  "roi_pct": 0
+}

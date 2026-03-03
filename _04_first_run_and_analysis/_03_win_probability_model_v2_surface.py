@@ -285,6 +285,11 @@ if __name__ == '__main__':
     ]
     predictors_col = [c for c in df.columns if c.endswith(tuple(suffix_available_at_t0))]
 
+    # ── SURFACE-ONLY: Remove q_100 and q_1000 depth features ──
+    n_before_filter = len(predictors_col)
+    predictors_col = [c for c in predictors_col if 'q_100' not in c and 'q_1000' not in c]
+    print(f"Surface-only filter: removed {n_before_filter - len(predictors_col)} depth features (q_100/q_1000), keeping {len(predictors_col)}", flush=True)
+
     # Fraction features
     df['total_qty_m1'] = df[['total_back_qty_m1', 'total_lay_qty_m1']].sum(axis=1)
     df['total_qty_m3'] = df[['total_back_qty_m3', 'total_lay_qty_m3']].sum(axis=1)
@@ -515,7 +520,7 @@ if __name__ == '__main__':
     # Save results
     # ══════════════════════════════════════════════
     hp_str = f"ne{hp['n_estimators']}_md{hp['max_depth']}_lr{hp['learning_rate']}"
-    save_dir = f'{Constant.RES_DIR}/win_model_v2/t{t_definition}/{hp_str}/'
+    save_dir = f'{Constant.RES_DIR}/win_model_v2_surface/t{t_definition}/{hp_str}/'
     os.makedirs(save_dir, exist_ok=True)
 
     # Save OOS predictions
@@ -542,6 +547,11 @@ if __name__ == '__main__':
     xgb_model.save_model(save_dir + 'xgboost_model.json')
     if HAS_LGBM:
         lgb_model.booster_.save_model(save_dir + 'lightgbm_model.txt')
+
+    # Save isotonic calibrator
+    import pickle
+    with open(save_dir + 'isotonic_calibrator.pkl', 'wb') as f:
+        pickle.dump(iso_reg, f)
 
     # Save metrics summary
     metrics = {

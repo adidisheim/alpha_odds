@@ -39,6 +39,24 @@ def add_time_snapshot(df, snap_time):
     return df, df.loc[df["time_delta"] == snap_time, :].drop_duplicates().copy()
 
 
+def _remove_forced_snapshot_dups(temp, id_cols, book_columns):
+    """
+    Remove consecutive duplicate non-trade rows per runner.
+
+    In the historical pipeline, each row was a genuine event (book change or trade).
+    Live forced snapshots record the same book state every 5 seconds, creating
+    identical rows that compress std toward 0. This removes those duplicates
+    while keeping all trade rows and genuine book changes.
+    """
+    is_trade = (temp["qty"] > 0) if "qty" in temp.columns else pd.Series(False, index=temp.index)
+    # For each runner, flag non-trade rows identical to previous row
+    shifted = temp.groupby(id_cols)[book_columns].shift(1)
+    is_dup = (temp[book_columns].values == shifted.values).all(axis=1)
+    # Keep: all trade rows + first occurrence of each book state + genuine changes
+    drop_mask = is_dup & (~is_trade)
+    return temp[~drop_mask]
+
+
 def compute_features_for_t_def(df, t_definition, runner_positions, mdef_info):
     """
     Compute features for a single time definition.
@@ -92,6 +110,18 @@ def compute_features_for_t_def(df, t_definition, runner_positions, mdef_info):
     tm1 = pd.Timedelta(seconds=td["tm1"])
     t0 = pd.Timedelta(seconds=td["t0"])
     tp1 = pd.Timedelta(seconds=td["tp1"])
+
+    # Remove forced snapshot duplicates BEFORE adding time snapshots.
+    # In the historical pipeline, each row was a genuine streaming event.
+    # Live forced snapshots create identical non-trade rows every 5s that
+    # inflate sample count and compress std features toward 0.
+    # Deduplicating here ensures the data entering time snapshots and
+    # std computation matches the backtest data distribution.
+    n_before = len(df)
+    df = _remove_forced_snapshot_dups(df, id_cols, to_keep_columns)
+    n_removed = n_before - len(df)
+    if n_removed > 0:
+        logger.debug(f"Removed {n_removed} forced snapshot duplicates ({n_removed/n_before*100:.0f}%)")
 
     # Add time snapshots (same order as historical pipeline)
     df, dtp1 = add_time_snapshot(df, tp1)
@@ -290,6 +320,9 @@ def get_v2_predictors(df_columns, col_frac, col_frac_mom, cross_runner_cols):
     fixed_effect_columns = ["local_dow", "marketBaseRate", "numberOfActiveRunners"]
     predictors = predictors + fixed_effect_columns
     predictors = predictors + cross_runner_cols
+    # Deduplicate: cross_runner_cols like spread_m0, total_qty_m0, avg_mom_3_1
+    # can also match suffix patterns (_m0, _mom_3_1), causing double z-scoring
+    predictors = list(dict.fromkeys(predictors))
     return predictors
 
 
@@ -332,12 +365,21 @@ class FeatureComputer:
             logger.warning(f"No tick data for market {market_cache.market_id}")
             return {}
 
-        # Compute time_delta = scheduled_start - time (mirrors historical: max(time) - time)
-        # In live, we use scheduled start time so time_delta = scheduled_start - tick_time
-        scheduled_start = pd.Timestamp(market_cache.market_start_time, tz="UTC")
-        tick_df["time_delta"] = scheduled_start - tick_df["time"]
-
-        # Clamp negative time_deltas (ticks after scheduled start)
+        # Compute time_delta using the off time (SUSPENDED transition) as reference.
+        # This matches the historical pipeline which uses in_play_time (= first SUSPENDED).
+        # Fallback to scheduled_start if off_time not yet detected.
+        if market_cache.off_time is not None:
+            reference_time = pd.Timestamp(market_cache.off_time)
+            if reference_time.tzinfo is None:
+                reference_time = reference_time.tz_localize("UTC")
+        else:
+            logger.warning(
+                f"No off_time for {market_cache.market_id}, using scheduled_start"
+            )
+            reference_time = pd.Timestamp(market_cache.market_start_time)
+            if reference_time.tzinfo is None:
+                reference_time = reference_time.tz_localize("UTC")
+        tick_df["time_delta"] = reference_time - tick_df["time"]
         tick_df["time_delta"] = tick_df["time_delta"].clip(lower=pd.Timedelta(0))
 
         runner_positions = market_cache.get_runner_position_map()
@@ -359,6 +401,32 @@ class FeatureComputer:
 
                 if features.empty:
                     continue
+
+                # Log trade feature NaN rates for diagnostics
+                trade_cols = [c for c in features.columns if "count_3_1" in c or "count_2_1" in c
+                              or "mean_3_1" in c or "mean_2_1" in c]
+                if trade_cols:
+                    nan_rates = features[trade_cols].isna().mean()
+                    avg_nan = nan_rates.mean()
+                    if avg_nan > 0.5:
+                        logger.warning(
+                            f"t_def={t_def}: trade feature NaN rate = {avg_nan:.0%} "
+                            f"(expect ~11% historically)"
+                        )
+                    else:
+                        logger.info(
+                            f"t_def={t_def}: trade feature NaN rate = {avg_nan:.0%}"
+                        )
+
+                # Log m3 snapshot NaN rates
+                m3_cols = [c for c in features.columns if c.endswith("_m3")]
+                if m3_cols:
+                    m3_nan = features[m3_cols].isna().mean().mean()
+                    if m3_nan > 0.10:
+                        logger.warning(
+                            f"t_def={t_def}: m3 snapshot NaN rate = {m3_nan:.0%} "
+                            f"(expect ~4% historically)"
+                        )
 
                 # Add fraction features
                 features, col_frac, col_frac_mom = add_fraction_features(features)
@@ -404,6 +472,7 @@ class FeatureComputer:
                 results[t_def] = {
                     "features_v1": features_v1_norm,
                     "features_v2": features_v2_norm,
+                    "features_v2_pre_norm": features_v2,
                     "v1_predictors": v1_predictors,
                     "v2_predictors": v2_predictors,
                     "raw_features": raw_features,
@@ -447,6 +516,8 @@ class SavedNormalizerParams:
         Mirrors FeatureNormalizer.normalize_oos() exactly.
         """
         df = df.copy()
+        # Deduplicate predictor_cols to prevent double z-scoring
+        predictor_cols = list(dict.fromkeys(predictor_cols))
 
         # Ensure all predictor cols exist
         for c in predictor_cols:
